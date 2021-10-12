@@ -1,12 +1,12 @@
 import Foundation
 
-struct StrutFitHelper {
+public struct StrutFitHelper {
     
-    static let postMessageHandlerName = "webviewmessagehandler"
+    public static let postMessageHandlerName = "webviewmessagehandler"
     
-    static let localMocde = "mcode"
+    public static let localMocde = "mcode"
     
-    static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) -> Void) {
+    public static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) -> Void) {
         var components = URLComponents(string: url)!
         components.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
@@ -31,7 +31,7 @@ struct StrutFitHelper {
         task.resume()
     }
 
-    static func mapSizeUnitEnumtoString(sizeUnit: Int) -> String
+    public static func mapSizeUnitEnumtoString(sizeUnit: Int) -> String
     {
         switch sizeUnit {
         case 0:

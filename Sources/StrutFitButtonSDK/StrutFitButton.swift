@@ -178,7 +178,7 @@ public class StrutFitButton {
     }
     
     // Evaluating post messages from webview
-    func evaluatePostMessage (messageString: String)
+    public func evaluatePostMessage (messageString: String)
     {
              
         let json = JSON.init(parseJSON: messageString)
