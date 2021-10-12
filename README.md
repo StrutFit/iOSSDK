@@ -5,3 +5,4 @@ A description of this package.
 
 NSCameraUsageDescription
 NSPhotoLibraryUsageDescription
+NSMicrophoneUsageDescription
