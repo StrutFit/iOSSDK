@@ -2,10 +2,10 @@ import Foundation
 import UIKit
 import WebKit
 
-public class StrutFitButtonSDK {
+public class StrutFitButton {
     
     // UI components
-    let _button: UIButton?
+    public let _button: UIButton?
     var _webView: WKWebView = WKWebView()
     
     // Button Parameters
@@ -23,7 +23,7 @@ public class StrutFitButtonSDK {
     var _show: Bool = false
     var _webviewLoaded = false
     
-    init(SizeButton: UIButton, OrganizationId: Int, ShoeId: String, IsDevelopment: Bool)
+    public init(SizeButton: UIButton, OrganizationId: Int, ShoeId: String, IsDevelopment: Bool)
     {
         _organizationId = OrganizationId
         _shoeId = ShoeId
@@ -43,7 +43,7 @@ public class StrutFitButtonSDK {
         getSizeAndVisibility(measurementCode: getCodeFromLocal(), isInitializing: true)
     }
     
-    func buttonTapped(view: UIView, controller: WKScriptMessageHandler)
+    public func buttonTapped(view: UIView, controller: WKScriptMessageHandler)
     {
         // open the webview for the first time
         if(!_webviewLoaded)
