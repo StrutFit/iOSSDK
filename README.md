@@ -82,8 +82,8 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 	**ProductIdentifer:** "TestProduct".  
 
 	For a quick test instead of going to the scanning process you may login using the following test account.   
-	**Email:** test@test.com.   
-	**Password:** thisisatest.    
+	**Email:** test@test.com    
+	**Password:** thisisatest    
 
 	we encourage you to modify the button UI to suite your application while conforming to the StrutFit brand guidelines.
  
