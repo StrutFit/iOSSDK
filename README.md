@@ -10,8 +10,10 @@ NSCameraUsageDescription.
 NSPhotoLibraryUsageDescription. 
 NSMicrophoneUsageDescription. 
 
-1. StruFit library should be created as follows each time a user visits a product display page.  
-2. Below an example of how the StrutFit library should be implemented inside a view controller.
+1. use https://github.com/StrutFit/iOSSDK to import the library into your xcode project
+2. StruFit library should be created as follows each time a user visits a product display page.  
+
+4. Below an example of how the StrutFit library should be implemented inside a view controller.
    
 ```ruby  
 import UIKit
