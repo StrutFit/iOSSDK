@@ -6,12 +6,11 @@ public class StrutFitButton {
     
     // UI components
     public let _button: UIButton?
-    var _webView: WKWebView = WKWebView()
+    var _webView: WKWebView?
     
     // Button Parameters
     let _organizationId: Int
     let _shoeId: String
-    let _isDevelopment: Bool
     
     // Base strings
     let _baseAPIUrl: String;
@@ -23,21 +22,18 @@ public class StrutFitButton {
     var _show: Bool = false
     var _webviewLoaded = false
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ShoeId: String, IsDevelopment: Bool)
+    public init(SizeButton: UIButton, OrganizationId: Int, ShoeId: String)
     {
         _organizationId = OrganizationId
         _shoeId = ShoeId
-        _isDevelopment = IsDevelopment
         
         _button = SizeButton;
         _button?.backgroundColor = UIColor.gray
         _button?.isHidden = true;
         
-
-        
         // Set up API URL's
-        _baseAPIUrl = IsDevelopment ? "https://api-dev.strut.fit/api/" : "https://api-prod.strut.fit/api/";
-        _baseWebViewUrl = IsDevelopment ? "https://consumer-portal-dev.strut.fit/" : "https://scan.strut.fit/";
+        _baseAPIUrl = "https://api-prod.strut.fit/api/";
+        _baseWebViewUrl = "https://scan.strut.fit/";
         
         // Make the initial API request
         getSizeAndVisibility(measurementCode: getCodeFromLocal(), isInitializing: true)
@@ -62,26 +58,26 @@ public class StrutFitButton {
             
             configuration.allowsPictureInPictureMediaPlayback = true;
             self._webView = WKWebView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), configuration: configuration)
-            self._webView.isHidden = false;
+            self._webView!.isHidden = false;
             
             // Add it
-            view.addSubview(self._webView)
+            view.addSubview(self._webView!)
             
             // Adding post message handler function
-            self._webView.configuration.userContentController.add(controller, name: StrutFitHelper.postMessageHandlerName)
+            self._webView!.configuration.userContentController.add(controller, name: StrutFitHelper.postMessageHandlerName)
             
             // Load the URL
             guard let url = URL(string: self._webviewUrl) else {
                 return
             }
-            self._webView.load(URLRequest(url: url))
+            self._webView!.load(URLRequest(url: url))
             
             self._webviewLoaded = true
         }
         // open the webview again
         else
         {
-            _webView.isHidden = false;
+            _webView!.isHidden = false;
         }
     }
     
@@ -227,7 +223,7 @@ public class StrutFitButton {
         DispatchQueue.main.async
         {
             // Set is hidden
-            self._webView.isHidden = true
+            self._webView!.isHidden = true
         }
     }
     
