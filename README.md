@@ -5,10 +5,10 @@ If we have implemented the the library doesnt quite work for your organisation p
 
 This code should be executed when a user visits the product display page.
 
-ensure the following is in your info file. 
-NSCameraUsageDescription. 
-NSPhotoLibraryUsageDescription. 
-NSMicrophoneUsageDescription. 
+Ensure the following is in your info.plist file.   
+NSCameraUsageDescription.   
+NSPhotoLibraryUsageDescription.   
+NSMicrophoneUsageDescription.   
 
 1. use https://github.com/StrutFit/iOSSDK to import the library into your xcode project. Plseae use the latest version (you can see this in releases)
 2. StruFit library should be created as follows each time a user visits a product display page.  
