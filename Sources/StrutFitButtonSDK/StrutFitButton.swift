@@ -22,10 +22,10 @@ public class StrutFitButton {
     var _show: Bool = false
     var _webviewLoaded = false
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ShoeId: String)
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String)
     {
         _organizationId = OrganizationId
-        _shoeId = ShoeId
+        _shoeId = ProductIdentifier
         
         _button = SizeButton;
         _button?.backgroundColor = UIColor.gray
