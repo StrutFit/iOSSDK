@@ -1,6 +1,6 @@
 # StrutFit Button iOS SDK
 
-If you have any issues or suggested changes/improvements please email nish@strut.fit. 
+If you have any issues or suggested changes/improvements please email nish@strut.fit.   
 If we have implemented the the library doesnt quite work for your organisation please let us know we are happy to discuss.
 
 This code should be executed when a user visits the product display page.
