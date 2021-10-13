@@ -72,7 +72,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 }
 ```
 
-2. Initializing StrutFit button  
+4. Initializing StrutFit button  
 	OrganizationID - an integer given to you by your StrutFit account manager.  
 	ProductIdentifer  - string value of the unique identifer of the shoe that is being viewed.  
 
