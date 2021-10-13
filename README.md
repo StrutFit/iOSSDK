@@ -77,7 +77,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 	ProductIdentifer  - string value of the unique identifer of the shoe that is being viewed.  
 
 	When testing you can use the following. 
-  Before release please defer to putting the actual product identifier and oranizationId provided by your StrutFit account manager 
+  	Before release please defer to putting the actual product identifier and oranizationId provided by your StrutFit account manager. 
 	**OrganizationID:** 5  
 	**ProductIdentifer:** "TestProduct" 
 
