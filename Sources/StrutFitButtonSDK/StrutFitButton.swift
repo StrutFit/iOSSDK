@@ -144,16 +144,37 @@ public class StrutFitButton {
                 {
                     let json = JSON(responseObject[index].value)
                     var _buttonText = "Unavaliable in your roccomended size";
-                    self._show = json["visibilityData"]["show"].rawValue as! Bool
+                    // self._show = json["visibilityData"]["show"].rawValue as! Bool
+                    
+                    if let show = json["visibilityData"]["show"].rawValue as? Bool {
+                        self._show = show
+                    }
                     
                     if(self._show)
                     {
-                        self._isKids = json["visibilityData"]["isKids"].rawValue as! Bool
+                        if let isKids = json["visibilityData"]["isKids"].rawValue as? Bool {
+                            self._isKids = isKids
+                        }
                         
-                        let _size: String = json["sizeData"]["size"].rawValue as! String
-                        let _sizeUnit: Int = json["sizeData"]["unit"].rawValue as! Int
-                        let _showWidthCategory: Bool = json["sizeData"]["showWidthCategory"].rawValue as! Bool
-                        let _widthAbbreviation: String = json["sizeData"]["widthAbbreviation"].rawValue as! String
+                        var _size: String = ""
+                        if let size = json["sizeData"]["size"].rawValue as? String {
+                            _size = size
+                        }
+                        
+                        var _sizeUnit: Int = 0
+                        if let sizeUnit = json["sizeData"]["size"].rawValue as? Int {
+                            _sizeUnit = sizeUnit
+                        }
+                        
+                        var _showWidthCategory: Bool = false
+                        if let showWidthCategory = json["sizeData"]["showWidthCategory"].rawValue as? Bool {
+                            _showWidthCategory = showWidthCategory
+                        }
+                        
+                        var _widthAbbreviation: String = ""
+                        if let widthAbbreviation = json["sizeData"]["widthAbbreviation"].rawValue as? String {
+                            _widthAbbreviation = widthAbbreviation
+                        }
                         
                         let _width: String = (!_showWidthCategory || _widthAbbreviation.isEmpty || _widthAbbreviation == "null") ? "" : _widthAbbreviation;
 
