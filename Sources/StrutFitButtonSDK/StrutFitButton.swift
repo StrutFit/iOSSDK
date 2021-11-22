@@ -22,8 +22,21 @@ public class StrutFitButton {
     var _show: Bool = false
     var _webviewLoaded = false
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String)
+    // Default Strings
+    var _kidsInitButtonText = ""
+    var _adultsInitButtonText = ""
+    
+    var _kidsSizeButtonText = ""
+    var _adultsSizeButtonText = ""
+    
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, KidsInitButtonText: String = "What is my child's size?", KidsSizeButtonText:String = "Your child's size in this style is ", AdultsSizeButtonText: String = "Your size in this style is ", AdultsInitButtonText:String = "What is my size?" )
     {
+        _kidsInitButtonText = KidsInitButtonText
+        _adultsInitButtonText = AdultsInitButtonText
+        
+        _kidsSizeButtonText = KidsSizeButtonText
+        _adultsSizeButtonText = AdultsSizeButtonText
+        
         _organizationId = OrganizationId
         _shoeId = ProductIdentifier
         
@@ -68,7 +81,7 @@ public class StrutFitButton {
             
             // Load the URL
             guard let url = URL(string: self._webviewUrl) else {
-                return
+                fatalError("url not set")
             }
             self._webView!.load(URLRequest(url: url))
             
@@ -77,7 +90,7 @@ public class StrutFitButton {
         // open the webview again
         else
         {
-            _webView!.isHidden = false;
+            _webView?.isHidden = false;
         }
     }
     
@@ -89,8 +102,7 @@ public class StrutFitButton {
         {
             StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/DetermineButtonVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId]) { responseObject, error in
                 guard let responseObject = responseObject, error == nil else {
-                    print(error ?? "Unknown error")
-                    return
+                    fatalError("unexpented response")
                 }
 
                 if let index = responseObject.index(forKey: "result")
@@ -113,7 +125,7 @@ public class StrutFitButton {
                         self._button?.isHidden = self._show ? false : true;
                         
                         // Set button text
-                        self._button?.setTitle(self._isKids ? "What is my child's size?" : "What is my size?", for: .normal)
+                        self._button?.setTitle(self._isKids ? self._kidsInitButtonText : self._adultsInitButtonText, for: .normal)
                     }
                 }
             }
@@ -125,8 +137,7 @@ public class StrutFitButton {
             StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/GetSizeandVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId, "MCode" : measurementCode]) { responseObject, error in
                 
                 guard let responseObject = responseObject, error == nil else {
-                    print(error ?? "Unknown error")
-                    return
+                    fatalError("unexpented response")
                 }
                 
                 if let index = responseObject.index(forKey: "result")
@@ -148,7 +159,7 @@ public class StrutFitButton {
 
                         if(!_size.isEmpty && _size != "null") {
                             let sizeReccomendationText : String = _size + " " + StrutFitHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
-                            _buttonText = self._isKids ? "Your child's size in this style is " + sizeReccomendationText : "Your size in this style is " + sizeReccomendationText;
+                            _buttonText = self._isKids ? self._kidsSizeButtonText + sizeReccomendationText : self._adultsSizeButtonText + sizeReccomendationText;
                         }
                         
                         // If the button has alrady been initialized we dont need to change the weburl
@@ -223,7 +234,7 @@ public class StrutFitButton {
         DispatchQueue.main.async
         {
             // Set is hidden
-            self._webView!.isHidden = true
+            self._webView?.isHidden = true
         }
     }
     
