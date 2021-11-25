@@ -7,12 +7,13 @@ public struct StrutFitHelper {
     public static let localMocde = "mcode"
     
     public static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) -> Void) {
-        var components = URLComponents(string: url)!
-        components.queryItems = parameters.map { (key, value) in
+        var components = URLComponents(string: url)
+        components?.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
         }
-        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-        let request = URLRequest(url: components.url!)
+        let _percentEncodedQuery = components?.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+        components?.percentEncodedQuery = _percentEncodedQuery
+        let request = URLRequest(url: (components?.url)!)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard
