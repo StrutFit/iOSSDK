@@ -6,7 +6,7 @@ public struct StrutFitHelper {
     
     public static let localMocde = "mcode"
     
-    public static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) -> Void) {
+    public static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) throws -> Void) {
         var components = URLComponents(string: url)
         components?.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
@@ -22,12 +22,17 @@ public struct StrutFitHelper {
                 200 ..< 300 ~= response.statusCode,           // is statusCode 2XX
                 error == nil                                  // was there no error
             else {
-                completion(nil, error)
+                do {
+                    try completion(nil, error)
+                } catch {}
                 return
             }
             
             let responseObject = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
-            completion(responseObject, nil)
+            do {
+                try completion(responseObject, nil)
+            } catch {}
+
         }
         task.resume()
     }

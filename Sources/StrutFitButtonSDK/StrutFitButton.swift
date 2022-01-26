@@ -29,7 +29,7 @@ public class StrutFitButton {
     var _kidsSizeButtonText = ""
     var _adultsSizeButtonText = ""
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, KidsInitButtonText: String = "What is my child's size?", KidsSizeButtonText:String = "Your child's size in this style is ", AdultsSizeButtonText: String = "Your size in this style is ", AdultsInitButtonText:String = "What is my size?" )
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = "What is my child's size?", KidsSizeButtonText:String = "Your child's size in this style is ", AdultsSizeButtonText: String = "Your size in this style is ", AdultsInitButtonText:String = "What is my size?" )
     {
         _kidsInitButtonText = KidsInitButtonText
         _adultsInitButtonText = AdultsInitButtonText
@@ -41,7 +41,7 @@ public class StrutFitButton {
         _shoeId = ProductIdentifier
         
         _button = SizeButton;
-        _button?.backgroundColor = UIColor.gray
+        _button?.backgroundColor = BackgroundColor;
         _button?.isHidden = true;
         
         // Set up API URL's
@@ -52,7 +52,7 @@ public class StrutFitButton {
         getSizeAndVisibility(measurementCode: getCodeFromLocal(), isInitializing: true)
     }
     
-    public func buttonTapped(view: UIView, controller: WKScriptMessageHandler)
+    public func buttonTapped(view: UIView, controller: WKScriptMessageHandler) throws
     {
         // open the webview for the first time
         if(!_webviewLoaded)
@@ -81,7 +81,7 @@ public class StrutFitButton {
             
             // Load the URL
             guard let url = URL(string: self._webviewUrl) else {
-                fatalError("url not set")
+                throw StrutfitError.urlNotSet
             }
             self._webView!.load(URLRequest(url: url))
             
@@ -102,7 +102,7 @@ public class StrutFitButton {
         {
             StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/DetermineButtonVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId]) { responseObject, error in
                 guard let responseObject = responseObject, error == nil else {
-                    fatalError("unexpented response")
+                    throw StrutfitError.unexpectedResponse
                 }
 
                 if let index = responseObject.index(forKey: "result")
@@ -137,7 +137,7 @@ public class StrutFitButton {
             StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/GetSizeandVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId, "MCode" : measurementCode]) { responseObject, error in
                 
                 guard let responseObject = responseObject, error == nil else {
-                    fatalError("unexpented response")
+                    throw StrutfitError.unexpectedResponse
                 }
                 
                 if let index = responseObject.index(forKey: "result")
@@ -270,5 +270,10 @@ public class StrutFitButton {
         let defaults = UserDefaults.standard
         let code  = defaults.string(forKey: StrutFitHelper.localMocde) ?? ""
         return code
+    }
+    
+    enum StrutfitError: Error {
+        case urlNotSet
+        case unexpectedResponse
     }
 }
