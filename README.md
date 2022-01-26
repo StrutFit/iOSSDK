@@ -33,7 +33,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
         button.isHidden = true;
 
         // Pass the button to the SF contructor which will initialize the button
-        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct")
+        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct", BackgroundColor: UIColor.gray)
         _strutfitButton = StrutFitButton
 
         // Attach click event handler
@@ -57,7 +57,9 @@ class ViewController: UIViewController, WKScriptMessageHandler {
                 DispatchQueue.main.async
                 {
                     // Set is hidden
-                    self._strutfitButton!.buttonTapped(view: self.view, controller: self)
+                    do {
+                        try self._strutfitButton!.buttonTapped(view: self.view, controller: self)
+                    } catch {}
                 }
             }
         }
