@@ -12,10 +12,6 @@ public class StrutFitButton {
     let _organizationId: Int
     let _shoeId: String
     
-    // Base strings
-    let _baseAPIUrl: String;
-    var _baseWebViewUrl: String = ""
-    
     // State Parameters
     var _webviewUrl: String = ""
     var _isKids: Bool = false
@@ -25,12 +21,15 @@ public class StrutFitButton {
     // Default Strings
     var _kidsInitButtonText = ""
     var _adultsInitButtonText = ""
-    
     var _kidsSizeButtonText = ""
     var _adultsSizeButtonText = ""
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = "What is my child's size?", KidsSizeButtonText:String = "Your child's size in this style is ", AdultsSizeButtonText: String = "Your size in this style is ", AdultsInitButtonText:String = "What is my size?" )
+    var _client: StrutFitClient;
+    
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize )
     {
+        _client = StrutFitClient();
+        
         _kidsInitButtonText = KidsInitButtonText
         _adultsInitButtonText = AdultsInitButtonText
         
@@ -44,12 +43,8 @@ public class StrutFitButton {
         _button?.backgroundColor = BackgroundColor;
         _button?.isHidden = true;
         
-        // Set up API URL's
-        _baseAPIUrl = "https://api-prod.strut.fit/api/";
-        _baseWebViewUrl = "https://scan.strut.fit/";
-        
         // Make the initial API request
-        getSizeAndVisibility(measurementCode: getCodeFromLocal(), isInitializing: true)
+        getSizeAndVisibility(measurementCode: CommonHelper.getCodeFromLocal(), isInitializing: true)
     }
     
     public func buttonTapped(view: UIView, controller: WKScriptMessageHandler) throws
@@ -77,7 +72,7 @@ public class StrutFitButton {
             view.addSubview(self._webView!)
             
             // Adding post message handler function
-            self._webView!.configuration.userContentController.add(controller, name: StrutFitHelper.postMessageHandlerName)
+            self._webView!.configuration.userContentController.add(controller, name: Constants.postMessageHandlerName)
             
             // Load the URL
             guard let url = URL(string: self._webviewUrl) else {
@@ -100,7 +95,7 @@ public class StrutFitButton {
         // User does not already exist
         if(measurementCode.isEmpty)
         {
-            StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/DetermineButtonVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId]) { responseObject, error in
+            _client.get(Constants.baseAPIUrl + "MobileApp/DetermineButtonVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId]) { responseObject, error in
                 guard let responseObject = responseObject, error == nil else {
                     throw StrutfitError.unexpectedResponse
                 }
@@ -134,7 +129,7 @@ public class StrutFitButton {
         // User exists and has already scanned
         else
         {
-            StrutFitHelper.sendRequest(_baseAPIUrl + "MobileApp/GetSizeandVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId, "MCode" : measurementCode]) { responseObject, error in
+            _client.get(Constants.baseAPIUrl + "MobileApp/GetSizeandVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId, "MCode" : measurementCode]) { responseObject, error in
                 
                 guard let responseObject = responseObject, error == nil else {
                     throw StrutfitError.unexpectedResponse
@@ -179,7 +174,7 @@ public class StrutFitButton {
                         let _width: String = (!_showWidthCategory || _widthAbbreviation.isEmpty || _widthAbbreviation == "null") ? "" : _widthAbbreviation;
 
                         if(!_size.isEmpty && _size != "null") {
-                            let sizeReccomendationText : String = _size + " " + StrutFitHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
+                            let sizeReccomendationText : String = _size + " " + ButtonHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
                             _buttonText = self._isKids ? self._kidsSizeButtonText + sizeReccomendationText : self._adultsSizeButtonText + sizeReccomendationText;
                         }
                         
@@ -217,12 +212,12 @@ public class StrutFitButton {
             case 0:
                 // Update Mcode
                 let newCode = json["mcode"].string ?? ""
-                self.storeCodeLocally(code: newCode)
+                CommonHelper.storeCodeLocally(code: newCode)
                 self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
             case 1:
                 // Update Mcode
                 let newCode = json["mcode"].string ?? ""
-                self.storeCodeLocally(code: newCode)
+                CommonHelper.storeCodeLocally(code: newCode)
                 self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
             case 2:
                 // Close modal
@@ -243,7 +238,7 @@ public class StrutFitButton {
         let randomInt = Int.random(in: 1..<9999)
             
         // Set initial webview url
-        let url = self._baseWebViewUrl + route + "?random=" + String(randomInt) + "&organisationId=" + String(organizationId) + "&shoeId=" + shoeId + "&inApp=true"
+        let url = Constants.baseWebViewUrl + route + "?random=" + String(randomInt) + "&organisationId=" + String(organizationId) + "&shoeId=" + shoeId + "&inApp=true"
         
         return url
     }
@@ -257,19 +252,6 @@ public class StrutFitButton {
             // Set is hidden
             self._webView?.isHidden = true
         }
-    }
-    
-    func storeCodeLocally (code: String)
-    {
-        let defaults = UserDefaults.standard
-        defaults.set(code, forKey: StrutFitHelper.localMocde)
-    }
-    
-    func getCodeFromLocal () -> String
-    {
-        let defaults = UserDefaults.standard
-        let code  = defaults.string(forKey: StrutFitHelper.localMocde) ?? ""
-        return code
     }
     
     enum StrutfitError: Error {
