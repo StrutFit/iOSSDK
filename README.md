@@ -56,10 +56,13 @@ class ViewController: UIViewController, WKScriptMessageHandler {
             if (granted) {
                 DispatchQueue.main.async
                 {
-                    // Set is hidden
                     do {
+                        // Set is hidden
                         try self._strutfitButton!.buttonTapped(view: self.view, controller: self)
-                    } catch {}
+                    }
+                    catch {
+                        // Button tap failed
+                    }
                 }
             }
         }
@@ -67,7 +70,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 
     // This lets us communicate information between the webview & button
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == StrutFitHelper.postMessageHandlerName {
+        if message.name == Constants.postMessageHandlerName {
             _strutfitButton!.evaluatePostMessage(messageString: message.body as! String)
         }
     }
