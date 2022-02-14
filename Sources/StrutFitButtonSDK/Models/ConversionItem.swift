@@ -9,13 +9,13 @@ import Foundation
 
 public struct ConversionItem {
 
-    var sku: String ;
+    let sku: String ;
     
-    var productIdentifier: String ;
+    let productIdentifier: String ;
 
-    var price: Float ;
+    let price: Float ;
     
-    var quantity: Int
+    let quantity: Int
 
-    var size: String ;    
+    let size: String ;
 }
