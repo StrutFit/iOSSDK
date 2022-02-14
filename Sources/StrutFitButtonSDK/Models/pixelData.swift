@@ -9,20 +9,20 @@ import Foundation
 
 public struct PixelData {
     
-    var organizationId: Int
+    public let organizationId: Int
 
-    var sfEnabled: Bool;
+    public let sfEnabled: Bool;
 
-    var orderRef: String ;
+    public let orderRef: String ;
 
-    var orderValue: Float ;
+    public let orderValue: Float ;
 
-    var mCode: String ;
+    public let mCode: String ;
 
-    var items: String ;
+    public let items: String ;
 
-    var currencyCode: String ;
+    public let currencyCode: String ;
 
-    var domain: String ;
+    public let domain: String ;
     
 }
