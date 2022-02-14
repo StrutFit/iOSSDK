@@ -89,4 +89,27 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 
 	we encourage you to modify the button UI to suite your application while conforming to the StrutFit brand guidelines.
  
-	
+# StrutFit (iOS) tracking pixel integration
+Prerquisite: Complete the button integration as shown above.
+
+The tracking pixel is used to record orders from the retailer. This is to allow us to track the preformace of StrutFit on your website.
+You can see the analytics in the Retailer dashboard/
+
+1. You must have the StrutFit iOS SDK package in your project.
+2. Go to the area in your code where the end consumer successfully completes an order
+3. Consider the following code: create an instance of StrutFitTracking then register an order
+
+```ruby
+	let sfTracking = StrutFitTracking(OrganizationID)
+        sfTracking.registerOrder(OrderReference, OrderValue, CurrencyCode, ListOfItems);
+```
+**OrderReference:** Typically every order has a unique order reference (string)  
+**OrderValue:** Total value of the order (double)  
+**CurrencyCode:** e.g. "USD", "NZD", "AUD" etc.  
+**ListOfItems:** Create an object **ArrayList<ConversionItem>** ListOfItems  
+**ConversionItem:** Data structure producded by StrutFit which contains the information for every item that was purchased for this particular order.  
+* sku: unique code for the item (string)  
+* productIdentifier: same as the productIdentifer you used in the button integration (sometimes this could be the same as sku) (string)  
+* price: price of this particular item (double)  
+* quantity: number of this item purchased (int)  
+* size: if there is a size to the item (string)	
