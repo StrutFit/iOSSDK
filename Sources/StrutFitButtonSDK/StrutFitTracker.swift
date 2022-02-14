@@ -8,7 +8,7 @@
 import Foundation
 
 
-public class StrutFittracker {
+public class StrutFitTracking {
     
     var _organizationunitId: Int;
     var _client :StrutFitClient
