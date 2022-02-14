@@ -1,12 +1,19 @@
+//
+//  File.swift
+//  
+//
+//  Created by StrutFit Admin on 10/02/22.
+//
+
 import Foundation
 
-public struct StrutFitHelper {
+public class StrutFitClient {
     
-    public static let postMessageHandlerName = "webviewmessagehandler"
+    public init() {
+        
+    }
     
-    public static let localMocde = "mcode"
-    
-    public static func sendRequest(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) throws -> Void) {
+    public func get(_ url: String, parameters: [String: String], completion: @escaping ([String: Any]?, Error?) throws -> Void) {
         var components = URLComponents(string: url)
         components?.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
@@ -36,42 +43,5 @@ public struct StrutFitHelper {
         }
         task.resume()
     }
-
-    public static func mapSizeUnitEnumtoString(sizeUnit: Int) -> String
-    {
-        switch sizeUnit {
-        case 0:
-            return "US"
-        case 1:
-            return "UK"
-        case 2:
-            return "EU"
-        case 3:
-            return "AU"
-        case 4:
-            return "FR"
-        case 5:
-            return "DE"
-        case 6:
-            return "NZ"
-        case 7:
-            return "JP"
-        case 8:
-            return "CN"
-        case 9:
-            return "MX"
-        case 10:
-            return "BR"
-        case 11:
-            return "KR"
-        case 12:
-            return "IN"
-        case 13:
-            return "RU"
-        case 14:
-            return "SA"
-        default:
-            return ""
-        }
-    }
+    
 }
