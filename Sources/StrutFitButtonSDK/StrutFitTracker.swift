@@ -25,7 +25,7 @@ public class StrutFitTracking {
         do {
             let itemsObjectJson = String(data: try _jsonEncoder.encode(items), encoding: String.Encoding.utf8)
             
-            let pixelData = PixelData(organizationId: _organizationunitId, sfEnabled: CommonHelper.getIsStrutfitInUse(), orderRef: orderReference, orderValue: orderValue, mCode: CommonHelper.getCodeFromLocal(), items: itemsObjectJson ?? "", currencyCode: currencyCode, domain: Constants.conversionDomain);
+            let pixelData = PixelData(organizationUnitId: _organizationunitId, sfEnabled: CommonHelper.getIsStrutfitInUse(), orderRef: orderReference, orderValue: orderValue, mCode: CommonHelper.getCodeFromLocal(), items: itemsObjectJson ?? "", currencyCode: currencyCode, domain: Constants.conversionDomain);
             
             let pixelDataJson = String(data: try _jsonEncoder.encode(pixelData), encoding: String.Encoding.utf8)
             
