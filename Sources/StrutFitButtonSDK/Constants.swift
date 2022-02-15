@@ -17,8 +17,8 @@ public struct Constants {
     
     public static let baseWebViewUrl = "https://scan.strut.fit/";
     
-    public static let conversionUrl = "https://omwbh6dj4a.execute-api.ap-southeast-2.amazonaws.com/PixelProxy/";
-    // https://89is6vgq2c.execute-api.ap-southeast-2.amazonaws.com/PixelProxyDev
+    public static let conversionUrl = "https://omwbh6dj4a.execute-api.ap-southeast-2.amazonaws.com/PixelProxy/Ingest";
+    // https://89is6vgq2c.execute-api.ap-southeast-2.amazonaws.com/PixelProxyDev/Ingest
     
     public static let conversionDomain = "app.sdk.ios"
     // app-dev.sdk.ios
