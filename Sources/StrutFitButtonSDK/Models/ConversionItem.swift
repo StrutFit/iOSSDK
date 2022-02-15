@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ConversionItem {
+public struct ConversionItem: Codable {
     
     public init(sku: String, productIdentifier: String,
                 price: Float, quantity: Int, size: String) {

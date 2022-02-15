@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PixelData {
+public struct PixelData: Codable {
     
     public init(organizationId: Int, sfEnabled: Bool,
                 orderRef: String, orderValue: Float, mCode: String,
