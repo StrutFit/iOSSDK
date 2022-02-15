@@ -29,8 +29,12 @@ public class StrutFitTracking {
             
             let pixelDataJson = String(data: try _jsonEncoder.encode(pixelData), encoding: String.Encoding.utf8)
             
-            _client.get(Constants.conversionUrl, parameters: ["token" : pixelDataJson ?? ""]){ responseObject, error in
-              // No action needed
+            if(pixelDataJson != nil) {
+                let base64Encoded = Data(pixelDataJson?.utf8 ?? "".utf8).base64EncodedString()
+                
+                _client.get(Constants.conversionUrl, parameters: ["token" : base64Encoded ]){ responseObject, error in
+                  // No action needed
+                }
             }
         }
         catch {
