@@ -28,6 +28,11 @@ public class StrutFitButton {
     
     public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize )
     {
+        // Poition SF logo inside button
+        if let image = UIImage(named: "test.svg") {
+            SizeButton.setImage(image, for: .normal)
+        }
+        
         _client = StrutFitClient();
         
         _kidsInitButtonText = KidsInitButtonText
