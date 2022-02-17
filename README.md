@@ -33,7 +33,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
         button.isHidden = true;
 
         // Pass the button to the SF contructor which will initialize the button
-        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct", BackgroundColor: UIColor.gray)
+        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct", BackgroundColor: UIColor.gray, LogoColor: 							StrutFitLogoColor.Black)
         _strutfitButton = StrutFitButton
 
         // Attach click event handler
@@ -79,7 +79,9 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 
 4. Initializing StrutFit button  
 	OrganizationID - an integer given to you by your StrutFit account manager.  
-	ProductIdentifer  - string value of the unique identifer of the shoe that is being viewed.  
+	ProductIdentifer  - string value of the unique identifer of the shoe that is being viewed.   
+	LogoColor -  Color of the SF logo that will display with the button (only options are black and white). 
+	**You must aslso include the following svg's in your asset folder**. 
 
 	When testing you can use the following. 
   	Before release please defer to putting the actual product identifier and oranizationId provided by your StrutFit account manager.   
