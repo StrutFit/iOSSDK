@@ -26,8 +26,18 @@ public class StrutFitButton {
     
     var _client: StrutFitClient;
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize )
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize, LogoColor: StrutFitLogoColor = StrutFitLogoColor.Black )
     {
+        // Poition SF logo inside button
+        var imageName = "strutfit-glyph.svg";
+        if(LogoColor == StrutFitLogoColor.White) {
+            imageName = "strutfit-glyph-white.svg"
+        }
+        
+        if let image = UIImage(named: imageName) {
+            SizeButton.setImage(image, for: .normal)
+        }
+        
         _client = StrutFitClient();
         
         _kidsInitButtonText = KidsInitButtonText
