@@ -34,7 +34,7 @@ public class StrutFitButton {
             imageName = "strutfit-glyph-white.svg"
         }
         
-        if let image = UIImage(named: imageName) {
+        if let image = UIImage(named: imageName, in: Bundle(for: type(of:self)), compatibleWith: nil) {
             SizeButton.setImage(image, for: .normal)
         }
         
