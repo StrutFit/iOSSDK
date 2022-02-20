@@ -81,8 +81,10 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 	OrganizationID - an integer given to you by your StrutFit account manager.  
 	ProductIdentifer  - string value of the unique identifer of the shoe that is being viewed.   
 	LogoColor -  Color of the SF logo that will display with the button (only options are black and white).   
-	**You must aslso include the following SVG's in your asset folder of your project. Keep the names the same**.   
-	https://artifacts.strut.fit/strutfit-glyph-white.svg  
+	**You must aslso include the following SVG's in your asset folder of your project. Keep the names the same**. 
+	Safari - (Right click link, Download linked file). 
+	Chrome - (Right clicl link, Save as). 
+	https://artifacts.strut.fit/strutfit-glyph-white.svg  (Right click, Download linked file)
 	https://artifacts.strut.fit/strutfit-glyph.svg  
 
 	When testing you can use the following. 
