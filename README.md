@@ -83,9 +83,9 @@ class ViewController: UIViewController, WKScriptMessageHandler {
 	LogoColor -  Color of the SF logo that will display with the button (only options are black and white).   
 	**You must aslso include the following SVG's in your asset folder of your project. Keep the names the same**. 
 	Safari - (Right click link, Download linked file). 
-	Chrome - (Right clicl link, Save as). 
-	https://artifacts.strut.fit/strutfit-logo-white.svg 
-	https://artifacts.strut.fit/strutfit-logo-black.svg  
+	Chrome - (Right clicl link, Save as).   
+	https://artifacts.strut.fit/strutfit-logo-white.svg.  
+	https://artifacts.strut.fit/strutfit-logo-black.svg.   
 
 	When testing you can use the following. 
   	Before release please defer to putting the actual product identifier and oranizationId provided by your StrutFit account manager.   
