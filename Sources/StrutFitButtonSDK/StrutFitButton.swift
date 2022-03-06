@@ -25,8 +25,9 @@ public class StrutFitButton {
     var _adultsSizeButtonText = ""
     
     var _client: StrutFitClient;
+    var _callBackFunction: (String, Int) -> ();
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize, LogoColor: StrutFitLogoColor = StrutFitLogoColor.Black )
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, SizeChangeCallBack: @escaping (String, Int) -> (), KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize, LogoColor: StrutFitLogoColor = StrutFitLogoColor.Black )
     {
         // Poition SF logo inside button
         var imageName = "strutfit-logo-black.png";
@@ -52,6 +53,8 @@ public class StrutFitButton {
         _button = SizeButton;
         _button?.backgroundColor = BackgroundColor;
         _button?.isHidden = true;
+        
+        _callBackFunction = SizeChangeCallBack;
         
         // Make the initial API request
         getSizeAndVisibility(measurementCode: CommonHelper.getCodeFromLocal(), isInitializing: true)
@@ -194,6 +197,8 @@ public class StrutFitButton {
                             // Set initial webview url
                             self._webviewUrl = self.generateWebViewUrl(isKids: self._isKids, organizationId: self._organizationId, shoeId: self._shoeId)
                         }
+                        
+                        self._callBackFunction(_size, _sizeUnit)
                     }
   
                     // Appy text to button
