@@ -33,7 +33,7 @@ class ViewController: UIViewController, WKScriptMessageHandler {
         button.isHidden = true;
 
         // Pass the button to the SF contructor which will initialize the button
-        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct", BackgroundColor: UIColor.gray, LogoColor: 							StrutFitLogoColor.Black)
+        let StrutFitButton = StrutFitButton(SizeButton: button, OrganizationId: 5, ProductIdentifier: "TestProduct", BackgroundColor: UIColor.gray, LogoColor: 							StrutFitLogoColor.Black, SizeChangeCallBack: sizeChangeCallBack)
         _strutfitButton = StrutFitButton
 
         // Attach click event handler
@@ -68,11 +68,18 @@ class ViewController: UIViewController, WKScriptMessageHandler {
         }
     }
 
-    // This lets us communicate information between the webview & button
+    // This lets us communicate information between the webview & button.
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == Constants.postMessageHandlerName {
             _strutfitButton!.evaluatePostMessage(messageString: message.body as! String)
         }
+    }
+    
+    // This function gets called when the size changes if you want to automatically populate your size selection.
+    // This is optional.
+    func sizeChangeCallBack(size: String, sizeUnit: Int) {
+        print(size);
+        print(sizeUnit);
     }
 }
 ```
