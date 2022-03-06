@@ -25,9 +25,9 @@ public class StrutFitButton {
     var _adultsSizeButtonText = ""
     
     var _client: StrutFitClient;
-    var _callBackFunction: (String, Int) -> ();
+    var _callBackFunction: ((String, Int) -> ())?;
     
-    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, SizeChangeCallBack: @escaping (String, Int) -> (), KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize, LogoColor: StrutFitLogoColor = StrutFitLogoColor.Black )
+    public init(SizeButton: UIButton, OrganizationId: Int, ProductIdentifier: String, BackgroundColor: UIColor, SizeChangeCallBack: ((String, Int) -> ())? = nil, KidsInitButtonText: String = Constants.whatIsMyChildsSize, KidsSizeButtonText:String = Constants.yourChildsSize, AdultsSizeButtonText: String = Constants.yourAdultsSize, AdultsInitButtonText:String = Constants.whatIsMyAdultsSize, LogoColor: StrutFitLogoColor = StrutFitLogoColor.Black )
     {
         // Poition SF logo inside button
         var imageName = "strutfit-logo-black.png";
@@ -198,7 +198,10 @@ public class StrutFitButton {
                             self._webviewUrl = self.generateWebViewUrl(isKids: self._isKids, organizationId: self._organizationId, shoeId: self._shoeId)
                         }
                         
-                        self._callBackFunction(_size, _sizeUnit)
+                        if(self._callBackFunction != nil)
+                        {
+                            self._callBackFunction!(_size, _sizeUnit)
+                        }
                     }
   
                     // Appy text to button
