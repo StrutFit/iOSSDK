@@ -249,14 +249,11 @@ public class StrutFitButton {
     // Generate webview url
     func generateWebViewUrl (isKids: Bool, organizationId: Int, shoeId: String) -> String
     {
-        // Make route
-        let route : String = isKids ? "nkids" : "nadults"
-        
         // Random number gen
         let randomInt = Int.random(in: 1..<9999)
             
         // Set initial webview url
-        let url = Constants.baseWebViewUrl + route + "?random=" + String(randomInt) + "&organisationId=" + String(organizationId) + "&shoeId=" + shoeId + "&inApp=true"
+        let url = Constants.baseWebViewUrl + "?random=" + String(randomInt) + "&organisationId=" + String(organizationId) + "&shoeId=" + shoeId + "&isKids=" + String(isKids) + "&inApp=true"
         
         return url
     }
