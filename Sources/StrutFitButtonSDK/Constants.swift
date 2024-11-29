@@ -13,15 +13,18 @@ public struct Constants {
     
     public static let localMocde = "mcode"
     
-    public static let baseAPIUrl = "https://api-prod.strut.fit/api/";
+//    public static let baseAPIUrl = "https://sizinglambda.strut.fit/";
+    public static let baseAPIUrl = "https://sizinglambda.dev.strut.fit/";
     
-    public static let baseWebViewUrl = "https://scan.strut.fit/";
+//    public static let baseWebViewUrl = "https://scan.strut.fit/";
+    public static let baseWebViewUrl = "https://scan.dev.strut.fit/";
     
-    public static let conversionUrl = "https://omwbh6dj4a.execute-api.ap-southeast-2.amazonaws.com/PixelProxy/ingest";
-    // https://89is6vgq2c.execute-api.ap-southeast-2.amazonaws.com/PixelProxyDev/Ingest
     
-    public static let conversionDomain = "app.sdk.ios"
-    // app-dev.sdk.ios
+//    public static let conversionUrl = "https://pixellambda.strut.fit/ingest";
+    public static let conversionUrl = "https://pixellambda.dev.strut.fit/ingest";
+    
+//    public static let conversionDomain = "app.sdk.ios"
+    public static let conversionDomain =  "app-dev.sdk.ios"
     
     public static let whatIsMyChildsSize = "What is my child's size?";
     

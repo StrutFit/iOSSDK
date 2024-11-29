@@ -65,35 +65,35 @@ public class StrutFitButton {
         // open the webview for the first time
         if(!_webviewLoaded)
         {
-            // Create webview
-            // Configuration needs to be initialized cannot be changed after (iOS Bug)
-            let configuration = WKWebViewConfiguration()
-            configuration.allowsInlineMediaPlayback = true
-            
-            if #available(iOS 14.0, *) {
-                configuration.defaultWebpagePreferences.allowsContentJavaScript = true
-            } else {
-                // Fallback on earlier versions
-                configuration.preferences.javaScriptEnabled = true
-            }
-            
-            configuration.allowsPictureInPictureMediaPlayback = true;
-            self._webView = WKWebView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), configuration: configuration)
-            self._webView!.isHidden = false;
-            
-            // Add it
-            view.addSubview(self._webView!)
-            
-            // Adding post message handler function
-            self._webView!.configuration.userContentController.add(controller, name: Constants.postMessageHandlerName)
-            
-            // Load the URL
-            guard let url = URL(string: self._webviewUrl) else {
-                throw StrutfitError.urlNotSet
-            }
-            self._webView!.load(URLRequest(url: url))
-            
-            self._webviewLoaded = true
+//            // Create webview
+//            // Configuration needs to be initialized cannot be changed after (iOS Bug)
+//            let configuration = WKWebViewConfiguration()
+//            configuration.allowsInlineMediaPlayback = true
+//            
+//            if #available(iOS 14.0, *) {
+//                configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+//            } else {
+//                // Fallback on earlier versions
+//                configuration.preferences.javaScriptEnabled = true
+//            }
+//            
+//            configuration.allowsPictureInPictureMediaPlayback = true;
+//            self._webView = WKWebView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), configuration: configuration)
+//            self._webView!.isHidden = false;
+//            
+//            // Add it
+//            view.addSubview(self._webView!)
+//            
+//            // Adding post message handler function
+//            self._webView!.configuration.userContentController.add(controller, name: Constants.postMessageHandlerName)
+//            
+//            // Load the URL
+//            guard let url = URL(string: self._webviewUrl) else {
+//                throw StrutfitError.urlNotSet
+//            }
+//            self._webView!.load(URLRequest(url: url))
+//            
+//            self._webviewLoaded = true
         }
         // open the webview again
         else
@@ -105,113 +105,107 @@ public class StrutFitButton {
     // Fetchs buttons state varibles from SF api and manipulates button state
     func getSizeAndVisibility (measurementCode: String, isInitializing: Bool)
     {
-        // User does not already exist
-        if(measurementCode.isEmpty)
-        {
-            _client.get(Constants.baseAPIUrl + "MobileApp/DetermineButtonVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId]) { responseObject, error in
-                guard let responseObject = responseObject, error == nil else {
-                    throw StrutfitError.unexpectedResponse
-                }
-
-                if let index = responseObject.index(forKey: "result")
-                {
-
-                    let json = JSON(responseObject[index].value)
-                    self._isKids = json["iskids"].boolValue
-                    self._show = json["show"].boolValue
-                                            
-                    if(isInitializing)
-                    {
-                        // Set initial webview url
-                        self._webviewUrl = self.generateWebViewUrl(isKids: self._isKids, organizationId: self._organizationId, shoeId: self._shoeId)
-                    }
-                   
-                        
-                    // In the main thread
-                    DispatchQueue.main.async {
-                        // Set is hidden
-                        self._button?.isHidden = self._show ? false : true;
-                        
-                        // Set button text
-                        self._button?.setTitle(self._isKids ? self._kidsInitButtonText : self._adultsInitButtonText, for: .normal)
-                    }
-                }
+        _client.get(Constants.baseAPIUrl + "SFButton", parameters: ["organizationUnitId": String(_organizationId), "code" : _shoeId, "mcode" : measurementCode]) {
+            responseObject, error in
+            
+            guard let responseObject = responseObject, error == nil else {
+                throw StrutfitError.unexpectedResponse
             }
-
-        }
-        // User exists and has already scanned
-        else
-        {
-            _client.get(Constants.baseAPIUrl + "MobileApp/GetSizeandVisibility", parameters: ["OrganizationUnitId": String(_organizationId), "Code" : _shoeId, "MCode" : measurementCode]) { responseObject, error in
-                
-                guard let responseObject = responseObject, error == nil else {
-                    throw StrutfitError.unexpectedResponse
+            
+            let json = JSON(responseObject)
+            var _buttonText = "Unavaliable in your roccomended size";
+            // self._show = json["visibilityData"]["show"].rawValue as! Bool
+            
+            if let show = json["VisibilityData"]["Show"].rawValue as? Bool {
+                self._show = show
+            }
+            
+            if(self._show)
+            {
+                if let isKids = json["VisibilityData"]["IsKids"].rawValue as? Bool {
+                    self._isKids = isKids
                 }
                 
-                if let index = responseObject.index(forKey: "result")
-                {
-                    let json = JSON(responseObject[index].value)
-                    var _buttonText = "Unavaliable in your roccomended size";
-                    // self._show = json["visibilityData"]["show"].rawValue as! Bool
-                    
-                    if let show = json["visibilityData"]["show"].rawValue as? Bool {
-                        self._show = show
+                if(json["SizeData"].rawValue as Optional<Any> != nil) {
+                    var _size: String = ""
+                    if let size = json["SizeData"]["Size"].rawValue as? String {
+                        _size = size
                     }
                     
-                    if(self._show)
+                    var _sizeUnit: Int = 0
+                    if let sizeUnit = json["SizeData"]["Size"].rawValue as? Int {
+                        _sizeUnit = sizeUnit
+                    }
+                    
+                    var _showWidthCategory: Bool = false
+                    if let showWidthCategory = json["SizeData"]["ShowWidthCategory"].rawValue as? Bool {
+                        _showWidthCategory = showWidthCategory
+                    }
+                    
+                    var _widthAbbreviation: String = ""
+                    if let widthAbbreviation = json["SizeData"]["WidthAbbreviation"].rawValue as? String {
+                        _widthAbbreviation = widthAbbreviation
+                    }
+                    
+                    let _width: String = (!_showWidthCategory || _widthAbbreviation.isEmpty || _widthAbbreviation == "null") ? "" : _widthAbbreviation;
+
+                    if(!_size.isEmpty && _size != "null") {
+                        let sizeReccomendationText : String = _size + " " + ButtonHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
+                        _buttonText = self._isKids ? self._kidsSizeButtonText + sizeReccomendationText : self._adultsSizeButtonText + sizeReccomendationText;
+                    }
+                    
+                    if(self._callBackFunction != nil)
                     {
-                        if let isKids = json["visibilityData"]["isKids"].rawValue as? Bool {
-                            self._isKids = isKids
-                        }
-                        
-                        var _size: String = ""
-                        if let size = json["sizeData"]["size"].rawValue as? String {
-                            _size = size
-                        }
-                        
-                        var _sizeUnit: Int = 0
-                        if let sizeUnit = json["sizeData"]["size"].rawValue as? Int {
-                            _sizeUnit = sizeUnit
-                        }
-                        
-                        var _showWidthCategory: Bool = false
-                        if let showWidthCategory = json["sizeData"]["showWidthCategory"].rawValue as? Bool {
-                            _showWidthCategory = showWidthCategory
-                        }
-                        
-                        var _widthAbbreviation: String = ""
-                        if let widthAbbreviation = json["sizeData"]["widthAbbreviation"].rawValue as? String {
-                            _widthAbbreviation = widthAbbreviation
-                        }
-                        
-                        let _width: String = (!_showWidthCategory || _widthAbbreviation.isEmpty || _widthAbbreviation == "null") ? "" : _widthAbbreviation;
-
-                        if(!_size.isEmpty && _size != "null") {
-                            let sizeReccomendationText : String = _size + " " + ButtonHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
-                            _buttonText = self._isKids ? self._kidsSizeButtonText + sizeReccomendationText : self._adultsSizeButtonText + sizeReccomendationText;
-                        }
-                        
-                        // If the button has alrady been initialized we dont need to change the weburl
-                        if(isInitializing)
-                        {
-                            // Set initial webview url
-                            self._webviewUrl = self.generateWebViewUrl(isKids: self._isKids, organizationId: self._organizationId, shoeId: self._shoeId)
-                        }
-                        
-                        if(self._callBackFunction != nil)
-                        {
-                            self._callBackFunction!(_size, _sizeUnit)
-                        }
+                        self._callBackFunction!(_size, _sizeUnit)
                     }
-  
-                    // Appy text to button
-                    // In the main thread
-                    DispatchQueue.main.async {
-                        // Set is hidden
-                        self._button?.isHidden = self._show ? false : true;
+                }
+                
+                // If the button has alrady been initialized we dont need to change the weburl
+                if(isInitializing)
+                {
+                    // Create webview
+//                    // Configuration needs to be initialized cannot be changed after (iOS Bug)
+//                    let configuration = WKWebViewConfiguration()
+//                    configuration.allowsInlineMediaPlayback = true
+//                    
+//                    if #available(iOS 14.0, *) {
+//                        configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+//                    } else {
+//                        // Fallback on earlier versions
+//                        configuration.preferences.javaScriptEnabled = true
+//                    }
+//                    
+//                    configuration.allowsPictureInPictureMediaPlayback = true;
+//                    self._webView = WKWebView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), configuration: configuration)
+//                    self._webView!.isHidden = false;
+//                    
+//                    // Add it
+//                    view.addSubview(self._webView!)
+//                    
+//                    // Adding post message handler function
+//                    self._webView!.configuration.userContentController.add(controller, name: Constants.postMessageHandlerName)
+//                    
+//                    // Load the URL
+//                    guard let url = URL(string: self._webviewUrl) else {
+//                        throw StrutfitError.urlNotSet
+//                    }
+//                    self._webView!.load(URLRequest(url: url))
+//                    
+//                    self._webviewLoaded = true
+                    
+                }
 
-                        // Set button text
+                // Appy text to button
+                // In the main thread
+                DispatchQueue.main.async {
+                    // Set is hidden
+                    self._button?.isHidden = self._show ? false : true;
+                    
+                    // Set button text
+                    if(json["SizeData"].rawValue as Optional<Any> != nil) {
                         self._button?.setTitle(_buttonText, for: .normal)
+                    } else {
+                        self._button?.setTitle(self._isKids ? self._kidsInitButtonText : self._adultsInitButtonText, for: .normal)
                     }
                 }
             }
@@ -223,26 +217,36 @@ public class StrutFitButton {
     {
              
         let json = JSON.init(parseJSON: messageString)
-        let messageType = json["messageType"].int
         
-        switch messageType
-        {
-            case 0:
-                // Update Mcode
-                let newCode = json["mcode"].string ?? ""
-                CommonHelper.storeCodeLocally(code: newCode)
-                self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
-            case 1:
-                // Update Mcode
-                let newCode = json["mcode"].string ?? ""
-                CommonHelper.storeCodeLocally(code: newCode)
-                self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
-            case 2:
-                // Close modal
-                closeModal()
-            default:
-                return
+        guard let messageType = json["messageType"].int else { return }
+        
+        if let postMessageType = PostMessageType(rawValue: messageType) {
+            switch postMessageType
+            {
+                case PostMessageType.UserFootMeasurementCodeData:
+                    // Update Mcode
+                    let newCode = json["mcode"].string ?? ""
+                    CommonHelper.storeCodeLocally(code: newCode)
+                    self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
+                case PostMessageType.CloseIFrame:
+                    // Close modal
+                    closeModal()
+//            case PostMessageType.IframeReady:
+                    //IFrame ready
+//                    PostMessageInitialAppInfoDto input = new PostMessageInitialAppInfoDto();
+//                    input.strutfitMessageType = PostMessageType.InitialAppInfo.getValue();
+//                    input.productId = _shoeId;
+//                    input.organizationUnitId = _organizationId;
+//                    input.hideSizeGuide = true;
+//                    input.inApp = true;
+                default:
+                    return
+            }
         }
+        
+
+        
+
 
     }
     
@@ -267,10 +271,5 @@ public class StrutFitButton {
             // Set is hidden
             self._webView?.isHidden = true
         }
-    }
-    
-    enum StrutfitError: Error {
-        case urlNotSet
-        case unexpectedResponse
     }
 }
