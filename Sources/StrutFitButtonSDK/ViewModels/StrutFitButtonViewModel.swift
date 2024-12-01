@@ -10,7 +10,8 @@ import Foundation
 public class StrutFitButtonViewModel {
     enum State {
         case hidden
-        case visible(title: String, url: URL, isInitializing: Bool)
+        case initialize(url: URL)
+        case visible(title: String)
     }
 
     private let productCode: String
@@ -19,10 +20,12 @@ public class StrutFitButtonViewModel {
     
     private var _isKids: Bool = false
     
-    // Default Strings
-    private var _kidsInitButtonText = ""
-    private var _adultsInitButtonText = ""
-    private var _sizeButtonText = ""
+    private var preLoginButtonTextAdultsTranslations: [CustomTextValue] = []
+    private var preLoginButtonTextKidsTranslations: [CustomTextValue] = []
+    private var buttonResultTextTranslations: [CustomTextValue] = []
+    private var unavailableSizeText = "Unavailable in your recommended size"
+    
+    private var _buttonText = ""
     
     
     private var _client: StrutFitClient
@@ -41,9 +44,6 @@ public class StrutFitButtonViewModel {
         self.productCode = productCode
         self.organizationUnitId = organizationUnitId
         self.webViewURL = URL(string: Constants.baseWebViewUrl)!
-        self._kidsInitButtonText = Constants.whatIsMyChildsSize
-        self._adultsInitButtonText = Constants.whatIsMyAdultsSize
-        self._sizeButtonText = Constants.yourAdultsSize
         self._client = StrutFitClient()
     }
     
@@ -57,8 +57,6 @@ public class StrutFitButtonViewModel {
             }
             
             let json = JSON(responseObject)
-            var _buttonText = self._isKids ? self._kidsInitButtonText : self._adultsInitButtonText
-            
             var visibilityData = json["VisibilityData"]
             
             var show = json["VisibilityData"]["Show"].rawValue as? Bool ?? false;
@@ -66,6 +64,38 @@ public class StrutFitButtonViewModel {
             if let isKids = json["VisibilityData"]["IsKids"].rawValue as? Bool {
                 self._isKids = isKids
             }
+            
+            if let preLoginButtonTextAdultsTranslations = json["VisibilityData"]["PreLoginButtonTextAdultsTranslations"].rawValue as? String {
+                if let jsonData = preLoginButtonTextAdultsTranslations.data(using: .utf8) {
+                    do {
+                        self.preLoginButtonTextAdultsTranslations = try JSONDecoder().decode([CustomTextValue].self, from: jsonData)
+                    } catch {
+                        print("Error decoding JSON: \(error)")
+                    }
+                }
+            }
+            
+            if let preLoginButtonTextKidsTranslations = json["VisibilityData"]["PreLoginButtonTextKidsTranslations"].rawValue as? String {
+                if let jsonData = preLoginButtonTextKidsTranslations.data(using: .utf8) {
+                    do {
+                        self.preLoginButtonTextKidsTranslations = try JSONDecoder().decode([CustomTextValue].self, from: jsonData)
+                    } catch {
+                        print("Error decoding JSON: \(error)")
+                    }
+                }
+            }
+            
+            if let buttonResultTextTranslations = json["VisibilityData"]["ButtonResultTextTranslations"].rawValue as? String {
+                if let jsonData = buttonResultTextTranslations.data(using: .utf8) {
+                    do {
+                        self.buttonResultTextTranslations = try JSONDecoder().decode([CustomTextValue].self, from: jsonData)
+                    } catch {
+                        print("Error decoding JSON: \(error)")
+                    }
+                }
+            }
+            
+            self._buttonText = self._isKids ? self.getPreLoginButtonTextKids() : self.getPreLoginButtonTextAdults()
             
             if !(json["SizeData"].rawValue is NSNull) {
                 var _size: String = ""
@@ -91,10 +121,9 @@ public class StrutFitButtonViewModel {
                 let _width: String = (!_showWidthCategory || _widthAbbreviation.isEmpty || _widthAbbreviation == "null") ? "" : _widthAbbreviation;
 
                 if(!_size.isEmpty && _size != "null") {
-                    let sizeRecommendationText : String = _size + " " + ButtonHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit) + " " + _width;
-                    _buttonText = self._sizeButtonText + sizeRecommendationText
+                    self._buttonText = self.getButtonResultText(size: _size, sizeUnit: ButtonHelper.mapSizeUnitEnumtoString(sizeUnit: _sizeUnit), width: _width)
                 } else {
-                    _buttonText = "Unavailable in your recommended size";
+                    self._buttonText = self.unavailableSizeText;
                 }
                 
 //                if(self._callBackFunction != nil)
@@ -112,8 +141,12 @@ public class StrutFitButtonViewModel {
                     return
                 }
                 
-                // Set visible with button text
-                self.onStateChange?(.visible(title: _buttonText, url: self.webViewURL, isInitializing: isInitializing))
+                if(isInitializing) {
+                    self.onStateChange?(.initialize(url: self.webViewURL))
+                } else {
+                    // Set visible with button text
+                    self.onStateChange?(.visible(title: self._buttonText))
+                }
             }
         }
     }
@@ -153,7 +186,10 @@ public class StrutFitButtonViewModel {
                 } catch {
                     print("Error encoding input to JSON: \(error)")
                 }
-
+                // Set visible with button text
+                DispatchQueue.main.async {
+                    self.onStateChange?(.visible(title: self._buttonText))
+                }
             default:
                 return
             }
@@ -174,5 +210,47 @@ public class StrutFitButtonViewModel {
         
             self.sendMessageToJavascript?(javaScriptCode);
         }
+    }
+    
+    //TODO: Translations
+    func getPreLoginButtonTextAdults() -> String {
+        if !self.preLoginButtonTextAdultsTranslations.isEmpty {
+            let translation = self.preLoginButtonTextAdultsTranslations.first { $0.isDefault }
+            if(translation != nil) {
+                return translation!.text;
+            }
+        }
+
+        return "What is my size?";
+    }
+    
+    func getPreLoginButtonTextKids() -> String {
+        if !self.preLoginButtonTextKidsTranslations.isEmpty {
+            let translation = self.preLoginButtonTextKidsTranslations.first { $0.isDefault }
+            if(translation != nil) {
+                return translation!.text;
+            }
+        }
+
+        return "What is my child's size?";
+    }
+    
+    func getButtonResultText(size: String, sizeUnit: String, width: String) -> String {
+        if !self.buttonResultTextTranslations.isEmpty {
+            let translation = self.buttonResultTextTranslations.first { $0.isDefault }
+            if(translation != nil) {
+                return translation!.text
+                    .replacingOccurrences(of: "@size", with: size)
+                    .replacingOccurrences(of: "@unit", with: sizeUnit)
+                    .replacingOccurrences(of: "@width", with: width);
+            }
+        }
+
+        return "Your size in this style is " + size + " " + sizeUnit + " " + width;
+    }
+
+
+    func getUnavailableSizeText() -> String {
+        return unavailableSizeText;
     }
 }

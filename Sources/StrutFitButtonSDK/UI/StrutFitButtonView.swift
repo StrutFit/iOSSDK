@@ -79,12 +79,12 @@ public class StrutFitButtonView: UIButton {
             switch state {
             case .hidden:
                 self?.isHidden = true
-            case .visible(let title, let url, let isInitializing):
+            case .initialize(let url):
+                self?.isHidden = true
+                self?.preloadWebView(url: url)
+            case .visible(let title):
                 self?.setTitle(title, for: .normal)
                 self?.isHidden = false
-                if(isInitializing) {
-                    self?.preloadWebView(url: url)
-                }
             }
         }
         
