@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 public class StrutFitButtonView: UIButton {
     private let viewModel: StrutFitButtonViewModel
@@ -106,9 +107,14 @@ public class StrutFitButtonView: UIButton {
     }
 
     @objc private func buttonTapped() {
-        var strutFitMessageType = PostMessageType.ShowIFrame.rawValue
-        let javaScriptCode = "window.callStrutFitFromNativeApp('{\"strutfitMessageType\": \(strutFitMessageType)}')"
-        coordinator?.sendMessageToJavascript(message: javaScriptCode)
-        coordinator?.presentWebView(from: self.window?.rootViewController)
+        AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
+            DispatchQueue.main.async {
+                var strutFitMessageType = PostMessageType.ShowIFrame.rawValue
+                let javaScriptCode = "window.callStrutFitFromNativeApp('{\"strutfitMessageType\": \(strutFitMessageType)}')"
+                self.coordinator?.sendMessageToJavascript(message: javaScriptCode)
+                self.coordinator?.presentWebView(from: self.window?.rootViewController)
+            }
+        }
+
     }
 }

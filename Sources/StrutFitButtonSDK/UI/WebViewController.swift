@@ -50,11 +50,13 @@ public class WebViewController: UIViewController, WKNavigationDelegate, WKScript
     }
     
     public func sendMessageToJavascript(message: String) {
-        webView.evaluateJavaScript(message) { result, error in
-            if let error = error {
-                print("Error executing JavaScript: \(error)")
-            } else {
-                print("JavaScript executed successfully: \(result ?? "No result")")
+        DispatchQueue.main.async {
+            self.webView.evaluateJavaScript(message) { result, error in
+                if let error = error {
+                    print("Error executing JavaScript: \(error)")
+                } else {
+                    print("JavaScript executed successfully: \(result ?? "No result")")
+                }
             }
         }
     }

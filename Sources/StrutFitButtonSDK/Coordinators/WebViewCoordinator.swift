@@ -28,7 +28,9 @@ public class WebViewCoordinator {
         guard let webViewController = webViewController, let viewController = viewController else {
             return
         }
-        viewController.present(webViewController, animated: true)
+        DispatchQueue.main.async {
+            viewController.present(webViewController, animated: true)
+        }
     }
     
     public func closeWebView() {
