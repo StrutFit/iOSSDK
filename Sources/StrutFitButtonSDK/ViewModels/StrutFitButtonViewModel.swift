@@ -19,6 +19,7 @@ public class StrutFitButtonViewModel {
     private let webViewURL: URL
     
     private var _isKids: Bool = false
+    private var _productType: ProductType = ProductType.Footwear
     
     private var preLoginButtonTextAdultsTranslations: [CustomTextValue] = []
     private var preLoginButtonTextKidsTranslations: [CustomTextValue] = []
@@ -47,9 +48,9 @@ public class StrutFitButtonViewModel {
         self._client = StrutFitClient()
     }
     
-    func getSizeAndVisibility(measurementCode: String?, isInitializing: Bool)
+    func getSizeAndVisibility(footMeasurementCode: String?, bodyMeasurementCode: String?, isInitializing: Bool)
     {
-        _client.get(Constants.baseAPIUrl + "SFButton", parameters: ["organizationUnitId": String(organizationUnitId), "code" : productCode, "mcode" : measurementCode ?? ""]) {
+        _client.get(Constants.baseAPIUrl + "SFButton", parameters: ["organizationUnitId": String(organizationUnitId), "code" : productCode, "mcode" : footMeasurementCode ?? "", "bodyMCode" : bodyMeasurementCode ?? ""]) {
             responseObject, error in
             
             guard let responseObject = responseObject, error == nil else {
@@ -63,6 +64,10 @@ public class StrutFitButtonViewModel {
 
             if let isKids = json["VisibilityData"]["IsKids"].rawValue as? Bool {
                 self._isKids = isKids
+            }
+            
+            if let productType = json["VisibilityData"]["ProductType"].rawValue as? Int {
+                self._productType = ProductType(rawValue: productType) ?? ProductType.Footwear
             }
             
             if let preLoginButtonTextAdultsTranslations = json["VisibilityData"]["PreLoginButtonTextAdultsTranslations"].rawValue as? String {
@@ -97,7 +102,7 @@ public class StrutFitButtonViewModel {
             
             self._buttonText = self._isKids ? self.getPreLoginButtonTextKids() : self.getPreLoginButtonTextAdults()
             
-            if !(json["SizeData"].rawValue is NSNull) {
+            if self._productType == ProductType.Footwear && !(json["SizeData"].rawValue is NSNull) {
                 var _size: String = ""
                 if let size = json["SizeData"]["Size"].rawValue as? String {
                     _size = size
@@ -125,11 +130,19 @@ public class StrutFitButtonViewModel {
                 } else {
                     self._buttonText = self.unavailableSizeText;
                 }
-                
-//                if(self._callBackFunction != nil)
-//                {
-//                    self._callBackFunction!(_size, _sizeUnit)
-//                }
+            }
+            
+            if self._productType == ProductType.Apparel && !(json["ApparelSizeData"].rawValue is NSNull) {
+                var _size: String = ""
+                if let size = json["ApparelSizeData"]["Size"].rawValue as? String {
+                    _size = size
+                }
+
+                if(!_size.isEmpty && _size != "null") {
+                    self._buttonText = self.getButtonResultText(size: _size, sizeUnit: "", width: "")
+                } else {
+                    self._buttonText = self.unavailableSizeText;
+                }
             }
 
             // Appy text to button
@@ -166,19 +179,34 @@ public class StrutFitButtonViewModel {
             
             switch postMessageType
             {
+            case PostMessageType.UserAuthData:
+                // Update User Id
+                let userId = json["uuid"].string ?? nil
+                CommonHelper.setLocalUserId(userId: userId)
+                break;
             case PostMessageType.UserFootMeasurementCodeData:
                 // Update Mcode
-                let newCode = json["footMeasurementCode"].string ?? ""
-                CommonHelper.storeCodeLocally(code: newCode)
-                self.getSizeAndVisibility(measurementCode: newCode, isInitializing: false)
+                let newCode = json["footMeasurementCode"].string ?? nil
+                CommonHelper.setLocalFootMCode(code: newCode)
+                let bodyMCode = CommonHelper.getLocalBodyMCode()
+                self.getSizeAndVisibility(footMeasurementCode: newCode, bodyMeasurementCode: bodyMCode, isInitializing: false)
+                break;
+            case PostMessageType.UserBodyMeasurementCodeData:
+                // Update Mcode
+                let newCode = json["bodyMeasurementCode"].string ?? nil
+                CommonHelper.setLocalBodyMCode(code: newCode)
+                let footMCode = CommonHelper.getLocalFootMCode()
+                self.getSizeAndVisibility(footMeasurementCode: footMCode, bodyMeasurementCode: newCode, isInitializing: false)
+                break;
             case PostMessageType.CloseIFrame:
                 // Close modal
                 DispatchQueue.main.async {
                     self.closeWebView?()
                 }
+                break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)
@@ -190,6 +218,7 @@ public class StrutFitButtonViewModel {
                 DispatchQueue.main.async {
                     self.onStateChange?(.visible(title: self._buttonText))
                 }
+                break;
             default:
                 return
             }

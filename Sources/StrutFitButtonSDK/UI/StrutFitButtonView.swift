@@ -21,7 +21,7 @@ public class StrutFitButtonView: UIButton {
         super.init(frame: frame)
         setupButton()
         bindViewModel()
-        viewModel.getSizeAndVisibility(measurementCode: nil, isInitializing: true)
+        viewModel.getSizeAndVisibility(footMeasurementCode: CommonHelper.getLocalFootMCode(), bodyMeasurementCode: CommonHelper.getLocalBodyMCode(), isInitializing: true)
     }
 
     required init?(coder: NSCoder) {

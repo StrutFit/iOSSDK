@@ -40,3 +40,8 @@ public enum StrutfitError: Error {
     case urlNotSet
     case unexpectedResponse
 }
+
+public enum ProductType: Int {
+    case Footwear = 0
+    case Apparel = 1
+}

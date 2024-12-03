@@ -11,7 +11,9 @@ public struct Constants {
     
     public static let postMessageHandlerName = "webviewmessagehandler"
     
-    public static let localMocde = "mcode"
+    public static let activeFootMCode = "StrutFitActiveFootMeasurementCode"
+    public static let activeBodyMCode = "StrutFitActiveBodyMeasurementCode"
+    public static let uniqueUserId = "StrutFitUniqueUserId"
     
 //    public static let baseAPIUrl = "https://sizinglambda.strut.fit/";
     public static let baseAPIUrl = "https://sizinglambda.dev.strut.fit/";
