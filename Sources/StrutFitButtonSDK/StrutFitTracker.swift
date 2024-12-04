@@ -34,7 +34,7 @@ public class StrutFitTracking {
                                       bodyScanMCode: CommonHelper.getLocalBodyMCode(),
                                       items: itemsObjectJson ?? "",
                                       currencyCode: currencyCode,
-                                      domain: Constants.conversionDomain,
+                                      domain: Bundle.main.bundleIdentifier ?? "",
                                       isMobile: true,
                                       emailHash: emailHash);
             

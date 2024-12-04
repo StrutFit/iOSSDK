@@ -21,7 +21,7 @@ public class StrutFitClient {
         let _percentEncodedQuery = components?.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
         components?.percentEncodedQuery = _percentEncodedQuery
         var request = URLRequest(url: (components?.url)!)
-        request.setValue("strutfit.app", forHTTPHeaderField: "Origin")
+        request.setValue(Bundle.main.bundleIdentifier ?? "", forHTTPHeaderField: "Origin")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard

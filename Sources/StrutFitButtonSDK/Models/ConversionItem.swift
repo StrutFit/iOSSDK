@@ -9,9 +9,9 @@ import Foundation
 
 public struct ConversionItem : Codable {
     
-    public init(sku: String, productIdentifier: String,
+    public init(productIdentifier: String,
                 price: Float, quantity: Int, size: String,
-                sizeUnit: String) {
+                sizeUnit: String? = nil, sku: String? = nil) {
         self.sku = sku
         self.productIdentifier = productIdentifier
         self.price = price
@@ -20,7 +20,7 @@ public struct ConversionItem : Codable {
         self.sizeUnit = sizeUnit
     }
 
-    public let sku: String;
+    public let sku: String?;
     
     public let productIdentifier: String;
 
@@ -30,5 +30,5 @@ public struct ConversionItem : Codable {
 
     public let size: String;
     
-    public let sizeUnit: String;
+    public let sizeUnit: String?;
 }
