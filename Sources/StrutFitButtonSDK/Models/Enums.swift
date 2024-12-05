@@ -45,3 +45,27 @@ public enum ProductType: Int {
     case Footwear = 0
     case Apparel = 1
 }
+
+public enum Language: Int {
+    case English = 0
+    case German = 1
+    case Italian = 2
+    case Dutch = 3
+    case French = 4
+    case Spanish = 5
+    case Swedish = 6
+    case Japanese = 7
+    case Norwegian = 8
+    case Portuguese = 9
+    case Croatian = 10
+    case Czech = 11
+    case Danish = 12
+    case Estonian = 13
+    case Finnish = 14
+    case Hungarian = 15
+    case Latvian = 16
+    case Lithuanian = 17
+    case Polish = 18
+    case Slovak = 19
+    case Slovenian = 20
+}

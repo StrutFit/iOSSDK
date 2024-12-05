@@ -24,7 +24,7 @@ public class StrutFitButtonViewModel {
     private var preLoginButtonTextAdultsTranslations: [CustomTextValue] = []
     private var preLoginButtonTextKidsTranslations: [CustomTextValue] = []
     private var buttonResultTextTranslations: [CustomTextValue] = []
-    private var unavailableSizeText = "Unavailable in your recommended size"
+    private var unavailableSizeText = NSLocalizedString("UnavailableInYourSize", tableName: nil, bundle: .module, value: "", comment: "")
     
     private var _buttonText = ""
     
@@ -241,32 +241,50 @@ public class StrutFitButtonViewModel {
         }
     }
     
-    //TODO: Translations
     func getPreLoginButtonTextAdults() -> String {
+        var languageCode =  "en"
+        if let preferredLanguage = Locale.preferredLanguages.first {
+            languageCode = Locale(identifier: preferredLanguage).languageCode ?? "en"
+        }
         if !self.preLoginButtonTextAdultsTranslations.isEmpty {
-            let translation = self.preLoginButtonTextAdultsTranslations.first { $0.isDefault }
+            let translation = self.preLoginButtonTextAdultsTranslations.first {
+                $0.language == getLanguageByCode(code:languageCode).rawValue
+            }
             if(translation != nil) {
                 return translation!.text;
             }
         }
 
-        return "What is my size?";
+        return NSLocalizedString("WhatIsMySize", tableName: nil, bundle: .module, value: "", comment: "");
     }
     
     func getPreLoginButtonTextKids() -> String {
+        var languageCode =  "en"
+        if let preferredLanguage = Locale.preferredLanguages.first {
+            languageCode = Locale(identifier: preferredLanguage).languageCode ?? "en"
+        }
         if !self.preLoginButtonTextKidsTranslations.isEmpty {
-            let translation = self.preLoginButtonTextKidsTranslations.first { $0.isDefault }
+            let translation = self.preLoginButtonTextKidsTranslations.first {
+                $0.language == getLanguageByCode(code:languageCode).rawValue
+            }
             if(translation != nil) {
                 return translation!.text;
             }
         }
 
-        return "What is my child's size?";
+        return NSLocalizedString("WhatIsMySize_Kids", tableName: nil, bundle: .module, value: "", comment: "");
     }
     
     func getButtonResultText(size: String, sizeUnit: String, width: String) -> String {
+        var languageCode =  "en"
+        if let preferredLanguage = Locale.preferredLanguages.first {
+            languageCode = Locale(identifier: preferredLanguage).languageCode ?? "en"
+        }
+
         if !self.buttonResultTextTranslations.isEmpty {
-            let translation = self.buttonResultTextTranslations.first { $0.isDefault }
+            let translation = self.buttonResultTextTranslations.first {
+                $0.language == getLanguageByCode(code:languageCode).rawValue
+            }
             if(translation != nil) {
                 return translation!.text
                     .replacingOccurrences(of: "@size", with: size)
@@ -275,11 +293,63 @@ public class StrutFitButtonViewModel {
             }
         }
 
-        return "Your size in this style is " + size + " " + sizeUnit + " " + width;
+        return NSLocalizedString("YourStrutfitSize", tableName: nil, bundle: .module, value: "", comment: "") + size + " " + sizeUnit + " " + width;
     }
 
 
     func getUnavailableSizeText() -> String {
         return unavailableSizeText;
+    }
+    
+    func getLanguageByCode(code: String) -> Language {
+        switch(code) {
+        case "en":
+            return Language.English;
+        case "de":
+            return Language.German;
+        case "it":
+            return Language.Italian;
+        case "nl":
+            return Language.Dutch;
+        case "fr":
+            return Language.French;
+        case "es":
+            return Language.Spanish;
+        case "sv":
+            return Language.Swedish;
+        case "ja":
+            return Language.Japanese;
+        case "no":
+            return Language.Norwegian;
+        case "nb":
+            return Language.Norwegian;
+        case "pt":
+            return Language.Portuguese;
+        case "hr":
+            return Language.Croatian;
+        case "cs":
+            return Language.Czech;
+        case "da":
+            return Language.Danish;
+        case "et":
+            return Language.Estonian;
+        case "fi":
+            return Language.Finnish;
+        case "hu":
+            return Language.Hungarian;
+        case "lv":
+            return Language.Latvian;
+        case "lt":
+            return Language.Lithuanian;
+        case "pl":
+            return Language.Polish;
+        case "sk":
+            return Language.Slovak;
+        case "sl":
+            return Language.Slovenian;
+        default:
+            return Language.English
+        
+        }
     }
 }
