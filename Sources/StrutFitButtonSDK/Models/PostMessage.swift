@@ -1,5 +1,5 @@
 //
-//  PostMessages.swift
+//  PostMessage.swift
 //  StrutFitButtonSDK
 //
 //  Created by Jake Thomas on 29/11/2024.
@@ -8,12 +8,15 @@
 public class PostMessageInitialAppInfoDto: Encodable {
 
     // Initializer
-    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType) {
+    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType, defaultUnit: SizeUnit?, onlineScanInstructionsType: OnlineScanInstructionsType) {
         self.productId = productCode;
         self.organizationUnitId = organizationUnitId;
         self.productType = productType.rawValue;
         self.isKids = isKids;
+        self.defaultUnit = defaultUnit?.rawValue;
+        self.onlineScanInstructionsType = onlineScanInstructionsType.rawValue;
         self.hideSizeGuide = true;
+        self.hideUsualSize = true;
         self.inApp = true;
         self.strutfitMessageType = PostMessageType.InitialAppInfo.rawValue
     }
@@ -22,10 +25,10 @@ public class PostMessageInitialAppInfoDto: Encodable {
     var productType: Int
     var isKids: Bool
     var organizationUnitId: Int
-    var onlineScanInstructionsType: Int = 0
+    var onlineScanInstructionsType: Int
     var productId: String
-    var language: Int = 0
-    var defaultUnit: Int = 0
+    var defaultUnit: Int?
     var hideSizeGuide: Bool
+    var hideUsualSize: Bool
     var inApp: Bool
 }

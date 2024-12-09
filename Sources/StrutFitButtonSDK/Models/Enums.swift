@@ -69,3 +69,29 @@ public enum Language: Int {
     case Slovak = 19
     case Slovenian = 20
 }
+
+public enum SizeUnit: Int {
+    case US = 0
+    case UK = 1
+    case EU = 2
+    case AU = 3
+    case FR = 4
+    case DE = 5
+    case NZ = 6
+    case JP = 7
+    case CN = 8
+    case MX = 9
+    case BR = 10
+    case KR = 11
+    case IN = 12
+    case RU = 13
+    case SA = 14
+    case Mondopoint = 15
+}
+
+public enum OnlineScanInstructionsType: Int {
+    case OneFootOnPaper = 0
+    case OneFootOffPaper = 1
+    case TwoFootPaper = 2
+    case PlasticCard = 3
+}

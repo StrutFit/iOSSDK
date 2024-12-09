@@ -16,10 +16,12 @@ public class StrutFitButtonViewModel {
 
     private let productCode: String
     private let organizationUnitId: Int
+    private let sizeUnit: SizeUnit?
     private let webViewURL: URL
     
     private var _isKids: Bool = false
     private var _productType: ProductType = ProductType.Footwear
+    private var _onlineScanInstructionsType: OnlineScanInstructionsType = OnlineScanInstructionsType.OneFootOnPaper
     
     private var preLoginButtonTextAdultsTranslations: [CustomTextValue] = []
     private var preLoginButtonTextKidsTranslations: [CustomTextValue] = []
@@ -41,9 +43,11 @@ public class StrutFitButtonViewModel {
     /// - Parameters:
     ///   - productCode: A unique string representing the product.
     ///   - organizationUnitId: An integer representing the organization unit.
-    init(productCode: String, organizationUnitId: Int) {
+    ///   - sizeUnit: An optional parameter for the size unit to use when sizing (useful when you sell the same product in different regions).
+    init(productCode: String, organizationUnitId: Int, sizeUnit: String?) {
         self.productCode = productCode
         self.organizationUnitId = organizationUnitId
+        self.sizeUnit = CommonHelper.getSizeUnitEnumFromString(sizeUnit: sizeUnit);
         self.webViewURL = URL(string: Constants.baseWebViewUrl)!
         self._client = StrutFitClient()
     }
@@ -64,11 +68,24 @@ public class StrutFitButtonViewModel {
 
             if let isKids = json["VisibilityData"]["IsKids"].rawValue as? Bool {
                 self._isKids = isKids
+                
+                if(isKids) {
+                    if let onlineScanInstructionsType = json["VisibilityData"]["KidsOnlineScanInstructionsType"].rawValue as? Int {
+                        self._onlineScanInstructionsType = OnlineScanInstructionsType(rawValue: onlineScanInstructionsType) ?? OnlineScanInstructionsType.OneFootOnPaper
+                    }
+                } else {
+                    if let onlineScanInstructionsType = json["VisibilityData"]["AdultsOnlineScanInstructionsType"].rawValue as? Int {
+                        self._onlineScanInstructionsType = OnlineScanInstructionsType(rawValue: onlineScanInstructionsType) ?? OnlineScanInstructionsType.OneFootOnPaper
+                    }
+                }
+
             }
             
             if let productType = json["VisibilityData"]["ProductType"].rawValue as? Int {
                 self._productType = ProductType(rawValue: productType) ?? ProductType.Footwear
             }
+            
+            
             
             if let preLoginButtonTextAdultsTranslations = json["VisibilityData"]["PreLoginButtonTextAdultsTranslations"].rawValue as? String {
                 if let jsonData = preLoginButtonTextAdultsTranslations.data(using: .utf8) {
@@ -206,7 +223,7 @@ public class StrutFitButtonViewModel {
                 break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultUnit: sizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)
@@ -248,7 +265,7 @@ public class StrutFitButtonViewModel {
         }
         if !self.preLoginButtonTextAdultsTranslations.isEmpty {
             let translation = self.preLoginButtonTextAdultsTranslations.first {
-                $0.language == getLanguageByCode(code:languageCode).rawValue
+                $0.language == CommonHelper.getLanguageByCode(code:languageCode).rawValue
             }
             if(translation != nil) {
                 return translation!.text;
@@ -265,7 +282,7 @@ public class StrutFitButtonViewModel {
         }
         if !self.preLoginButtonTextKidsTranslations.isEmpty {
             let translation = self.preLoginButtonTextKidsTranslations.first {
-                $0.language == getLanguageByCode(code:languageCode).rawValue
+                $0.language == CommonHelper.getLanguageByCode(code:languageCode).rawValue
             }
             if(translation != nil) {
                 return translation!.text;
@@ -283,7 +300,7 @@ public class StrutFitButtonViewModel {
 
         if !self.buttonResultTextTranslations.isEmpty {
             let translation = self.buttonResultTextTranslations.first {
-                $0.language == getLanguageByCode(code:languageCode).rawValue
+                $0.language == CommonHelper.getLanguageByCode(code:languageCode).rawValue
             }
             if(translation != nil) {
                 return translation!.text
@@ -299,57 +316,5 @@ public class StrutFitButtonViewModel {
 
     func getUnavailableSizeText() -> String {
         return unavailableSizeText;
-    }
-    
-    func getLanguageByCode(code: String) -> Language {
-        switch(code) {
-        case "en":
-            return Language.English;
-        case "de":
-            return Language.German;
-        case "it":
-            return Language.Italian;
-        case "nl":
-            return Language.Dutch;
-        case "fr":
-            return Language.French;
-        case "es":
-            return Language.Spanish;
-        case "sv":
-            return Language.Swedish;
-        case "ja":
-            return Language.Japanese;
-        case "no":
-            return Language.Norwegian;
-        case "nb":
-            return Language.Norwegian;
-        case "pt":
-            return Language.Portuguese;
-        case "hr":
-            return Language.Croatian;
-        case "cs":
-            return Language.Czech;
-        case "da":
-            return Language.Danish;
-        case "et":
-            return Language.Estonian;
-        case "fi":
-            return Language.Finnish;
-        case "hu":
-            return Language.Hungarian;
-        case "lv":
-            return Language.Latvian;
-        case "lt":
-            return Language.Lithuanian;
-        case "pl":
-            return Language.Polish;
-        case "sk":
-            return Language.Slovak;
-        case "sl":
-            return Language.Slovenian;
-        default:
-            return Language.English
-        
-        }
     }
 }
