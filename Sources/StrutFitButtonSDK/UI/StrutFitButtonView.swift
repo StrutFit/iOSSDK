@@ -2,119 +2,33 @@
 //  StrutFitButtonView.swift
 //  StrutFitButtonSDK
 //
-//  Created by Jake Thomas on 27/11/2024.
+//  Created by Jake Thomas on 10/12/2024.
 //
 
-import UIKit
-import AVFoundation
+import SwiftUI
 
-public class StrutFitButtonView: UIButton {
-    private let viewModel: StrutFitButtonViewModel
-    private var coordinator: WebViewCoordinator?
+public struct StrutFitButtonView: UIViewRepresentable {
+    let productCode: String
+    let organizationUnitId: Int
+    let sizeUnit: String?
     
     /// Initializes the button with required parameters.
         /// - Parameters:
         ///   - productCode: A unique string representing the product.
         ///   - organizationUnitId: An integer representing the organization unit.
-    public init(productCode: String, organizationUnitId: Int, frame: CGRect) {
-        self.viewModel = StrutFitButtonViewModel(productCode: productCode, organizationUnitId: organizationUnitId)
-        super.init(frame: frame)
-        setupButton()
-        bindViewModel()
-        viewModel.getSizeAndVisibility(footMeasurementCode: CommonHelper.getLocalFootMCode(), bodyMeasurementCode: CommonHelper.getLocalBodyMCode(), isInitializing: true)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupButton() {
-        self.setTitle("Loading...", for: .normal)
-        self.setTitleColor(.black, for: .normal) // Set text color
-        self.backgroundColor = UIColor(hex: "#F2F2F2")
-        // Set internal margins (left and right)
-        let leftMargin: CGFloat = 8
-        let rightMargin: CGFloat = 8
-               
-        // Apply contentEdgeInsets to add left and right margin
-        self.contentEdgeInsets = UIEdgeInsets(top: 0, left: leftMargin, bottom: 0, right: rightMargin)
-        
-        let imageTextGap: CGFloat = 8
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: imageTextGap)
-        self.titleEdgeInsets = UIEdgeInsets(top: 0, left: imageTextGap, bottom: 0, right: 0)
-        
-        self.titleLabel?.numberOfLines = 0  // Allow unlimited lines for wrapping
-        self.titleLabel?.lineBreakMode = .byWordWrapping
-        
-        // Get the image from assets
-        if let image = UIImage(named: "SFButtonLogo", in: Bundle.module, with: nil) {
-            // Calculate the new image size based on the button height and margin
-            let margin: CGFloat = 10
-            let imageHeight = self.frame.height - 2 * margin  // Adjust height with margin
-            let aspectRatio = image.size.width / image.size.height
-            let imageWidth = imageHeight * aspectRatio  // Maintain the aspect ratio
-
-            // Resize the image to fit the button's height (with margin) while maintaining aspect ratio
-            let resizedImage = resizeImage(image: image, to: CGSize(width: imageWidth, height: imageHeight))
-
-            // Set the resized image to the button
-            self.setImage(resizedImage, for: .normal)
-            
-            // Adjust the contentMode for proper scaling
-            self.imageView?.contentMode = .scaleAspectFit
-        }
-        self.isHidden = true
-        self.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        ///   - sizeUnit: An optional parameter for the size unit to use when sizing (useful when you sell the same product in different regions).
+    public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil) {
+        self.productCode = productCode
+        self.organizationUnitId = organizationUnitId
+        self.sizeUnit = sizeUnit
     }
     
-    private func resizeImage(image: UIImage, to size: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, image.scale)
-        image.draw(in: CGRect(origin: .zero, size: size))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return resizedImage ?? image
-    }
-
-    private func bindViewModel() {
-        viewModel.onStateChange = { [weak self] state in
-            switch state {
-            case .hidden:
-                self?.isHidden = true
-            case .initialize(let url):
-                self?.isHidden = true
-                self?.preloadWebView(url: url)
-            case .visible(let title):
-                self?.setTitle(title, for: .normal)
-                self?.isHidden = false
-            }
-        }
-        
-        viewModel.sendMessageToJavascript = sendMessageToJavascript;
-        viewModel.closeWebView = closeWebView;
+    public func makeUIView(context: Context) -> StrutFitButton {
+        let button = StrutFitButton(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit)
+        return button
     }
     
-    func sendMessageToJavascript(message: String) {
-        coordinator?.sendMessageToJavascript(message: message)
-    }
-    
-    func closeWebView() {
-        coordinator?.closeWebView()
-    }
-    
-    private func preloadWebView(url: URL) {
-        coordinator = WebViewCoordinator(url: url, messageHandler: viewModel.handleMessage)
-        coordinator?.preloadWebView()
-    }
-
-    @objc private func buttonTapped() {
-        AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
-            DispatchQueue.main.async {
-                var strutFitMessageType = PostMessageType.ShowIFrame.rawValue
-                let javaScriptCode = "window.callStrutFitFromNativeApp('{\"strutfitMessageType\": \(strutFitMessageType)}')"
-                self.coordinator?.sendMessageToJavascript(message: javaScriptCode)
-                self.coordinator?.presentWebView(from: self.window?.rootViewController)
-            }
-        }
-
+    public func updateUIView(_ uiView: StrutFitButton, context: Context) {
+        // Handle updates to the view if needed
     }
 }
