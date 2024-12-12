@@ -16,9 +16,10 @@ public class StrutFitButton: UIButton {
         /// - Parameters:
         ///   - productCode: A unique string representing the product.
         ///   - organizationUnitId: An integer representing the organization unit.
-        ///   - sizeUnit: An optional parameter for the size unit to use when sizing (useful when you sell the same product in different regions).
-    public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil) {
-        self.viewModel = StrutFitButtonViewModel(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit)
+        ///   - sizeUnit: An optional parameter for the footwear size unit to use when sizing (useful when you sell the same product in different regions).
+        ///   - apparelSizeUnit: An optional parameter for the apparel size unit to use when sizing (useful when you sell the same product in different regions).
+    public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil, apparelSizeUnit: String? = nil) {
+        self.viewModel = StrutFitButtonViewModel(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit)
         super.init(frame: .zero)
         setupButton()
         bindViewModel()

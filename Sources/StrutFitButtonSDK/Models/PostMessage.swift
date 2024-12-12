@@ -8,12 +8,13 @@
 public class PostMessageInitialAppInfoDto: Encodable {
 
     // Initializer
-    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType, defaultUnit: SizeUnit?, onlineScanInstructionsType: OnlineScanInstructionsType) {
+    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType, defaultSizeUnit: SizeUnit?, defaultApparelSizeUnit: String?, onlineScanInstructionsType: OnlineScanInstructionsType) {
         self.productId = productCode;
         self.organizationUnitId = organizationUnitId;
         self.productType = productType.rawValue;
         self.isKids = isKids;
-        self.defaultUnit = defaultUnit?.rawValue;
+        self.defaultSizeUnit = defaultSizeUnit?.rawValue;
+        self.defaultApparelSizeUnit = defaultApparelSizeUnit;
         self.onlineScanInstructionsType = onlineScanInstructionsType.rawValue;
         self.hideSizeGuide = true;
         self.hideUsualSize = true;
@@ -27,7 +28,8 @@ public class PostMessageInitialAppInfoDto: Encodable {
     var organizationUnitId: Int
     var onlineScanInstructionsType: Int
     var productId: String
-    var defaultUnit: Int?
+    var defaultSizeUnit: Int?
+    var defaultApparelSizeUnit: String?
     var hideSizeGuide: Bool
     var hideUsualSize: Bool
     var inApp: Bool

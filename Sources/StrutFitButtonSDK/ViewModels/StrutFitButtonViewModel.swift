@@ -17,6 +17,7 @@ public class StrutFitButtonViewModel {
     private let productCode: String
     private let organizationUnitId: Int
     private let sizeUnit: SizeUnit?
+    private let apparelSizeUnit: String?
     private let webViewURL: URL
     
     private var _isKids: Bool = false
@@ -43,18 +44,27 @@ public class StrutFitButtonViewModel {
     /// - Parameters:
     ///   - productCode: A unique string representing the product.
     ///   - organizationUnitId: An integer representing the organization unit.
-    ///   - sizeUnit: An optional parameter for the size unit to use when sizing (useful when you sell the same product in different regions).
-    init(productCode: String, organizationUnitId: Int, sizeUnit: String?) {
+    ///   - sizeUnit: An optional parameter for the footwear size unit to use when sizing (useful when you sell the same product in different regions).
+    ///   - apparelSizeUnit: An optional parameter for the apparel size unit to use when sizing (useful when you sell the same product in different regions).
+    init(productCode: String, organizationUnitId: Int, sizeUnit: String?, apparelSizeUnit: String?) {
         self.productCode = productCode
         self.organizationUnitId = organizationUnitId
         self.sizeUnit = CommonHelper.getSizeUnitEnumFromString(sizeUnit: sizeUnit);
+        self.apparelSizeUnit = apparelSizeUnit;
         self.webViewURL = URL(string: Constants.baseWebViewUrl)!
         self._client = StrutFitClient()
     }
     
     func getSizeAndVisibility(footMeasurementCode: String?, bodyMeasurementCode: String?, isInitializing: Bool)
     {
-        _client.get(Constants.baseAPIUrl + "SFButton", parameters: ["organizationUnitId": String(organizationUnitId), "code" : productCode, "mcode" : footMeasurementCode ?? "", "bodyMCode" : bodyMeasurementCode ?? ""]) {
+        var parameters = ["organizationUnitId": String(organizationUnitId), "code" : productCode, "mcode" : footMeasurementCode ?? "", "bodyMCode" : bodyMeasurementCode ?? ""];
+        if(sizeUnit != nil) {
+            parameters["defaultUnit"] = String(sizeUnit!.rawValue)
+        }
+        if(apparelSizeUnit != nil) {
+            parameters["defaultApparelSizeUnit"] = apparelSizeUnit
+        }
+        _client.get(Constants.baseAPIUrl + "SFButton", parameters: parameters) {
             responseObject, error in
             
             guard let responseObject = responseObject, error == nil else {
@@ -126,7 +136,7 @@ public class StrutFitButtonViewModel {
                 }
                 
                 var _sizeUnit: Int = 0
-                if let sizeUnit = json["SizeData"]["Size"].rawValue as? Int {
+                if let sizeUnit = json["SizeData"]["Unit"].rawValue as? Int {
                     _sizeUnit = sizeUnit
                 }
                 
@@ -223,7 +233,7 @@ public class StrutFitButtonViewModel {
                 break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultUnit: sizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)
