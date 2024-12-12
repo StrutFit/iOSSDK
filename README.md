@@ -73,13 +73,14 @@ items.append(item2);
 
 //Fire order tracking event
 let sfTracking = StrutFitTracking(organizationUnitId: 1)
-sfTracking.registerOrder(orderReference: "ORDER123", orderValue: 150, currencyCode: "NZD", items: items);
+sfTracking.registerOrder(orderReference: "ORDER123", orderValue: 150, currencyCode: "NZD", items: items, userEmail: "test@test.com");
 ```
 **organizationUnitId:** Same as the organizationUnitId you used in the button integration (int)  
 **orderReference:** Every order must have a unique order reference that you've generated (string)  
 **orderValue:** Total value of the order (double)  
-**currencyCode:** e.g. "USD", "NZD", "AUD" etc.  
-**items:** An array of type **ConversionItem**\
+**currencyCode:** e.g. "USD", "NZD", "AUD" etc. (string)  
+**items:** An array of type **ConversionItem**  
+**userEmail:** Optional - useful for user tracking, but not required (string)  
 **ConversionItem:** Data structure produced by StrutFit which contains the information for every item that was purchased for this particular order.  
 * productIdentifier: same as the productCode you used in the button integration (string)  
 * price: price of this particular item (per item) (double)  
