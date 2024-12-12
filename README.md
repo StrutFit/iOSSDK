@@ -10,7 +10,7 @@ This code should be executed when a user visits the product display page. It wil
 
 4. Below an example of how the StrutFit library should be implemented inside a view using SwiftUI.
 
-```java
+```swift
 import SwiftUI
 import StrutFitButtonSDK
 
@@ -63,7 +63,7 @@ You can see the analytics at https://dashboard.strut.fit
 2. Go to the area in your code where the user successfully completes an order
 3. Apply the following code, i.e. create an instance of StrutFitTracking then register an order
 
-```java
+```swift
 //Build list of purchased items
 var items: [ConversionItem] = [];
 let item1 = ConversionItem(productIdentifier: "Test Product 1", price: 50, quantity: 1, size: "8 US");
