@@ -52,15 +52,6 @@ public class StrutFitTracking {
             // Pixel send failed
         }
     }
-    
-    // func hashCode(_ input: String) -> Int32 {
-    //     var hash: Int32 = 0
-    //     for char in input.utf16 { 
-    //         hash = (hash << 5) - hash + Int32(char) 
-    //         hash &= 0xFFFFFFFF 
-    //     }
-    //     return hash
-    // }
 
     func hashCode(_ input: String) -> Int32 {
         var hash: Int32 = 0
