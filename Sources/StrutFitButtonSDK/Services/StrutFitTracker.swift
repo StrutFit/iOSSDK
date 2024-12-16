@@ -53,12 +53,11 @@ public class StrutFitTracking {
         }
     }
     
-    func hashCode(_ str: String?) -> Int32? {
-        guard let str = str else { return nil }
-        
+    func hashCode(_ input: String) -> Int32 {
         var hash: Int32 = 0
-        for chr in str.utf16 {
-            hash = (hash << 5) - hash + Int32(chr)
+        for char in input.utf16 { 
+            hash = (hash << 5) - hash + Int32(char) 
+            hash &= 0xFFFFFFFF 
         }
         return hash
     }
