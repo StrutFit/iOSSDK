@@ -14,14 +14,12 @@ public struct Constants {
     public static let activeFootMCode = "StrutFitActiveFootMeasurementCode"
     public static let activeBodyMCode = "StrutFitActiveBodyMeasurementCode"
     public static let uniqueUserId = "StrutFitUniqueUserId"
-    
-    #if DEBUG
-        public static let baseAPIUrl = "https://sizinglambda.dev.strut.fit/";
-        public static let baseWebViewUrl = "https://scan.dev.strut.fit/";
-        public static let conversionUrl = "https://pixellambda.dev.strut.fit/ingest";
-    #else
-        public static let baseAPIUrl = "https://sizinglambda.strut.fit/";
-        public static let baseWebViewUrl = "https://scan.strut.fit/";
-        public static let conversionUrl = "https://pixellambda.strut.fit/ingest";
-    #endif
+
+    public static let baseAPIUrl = "https://sizinglambda.strut.fit/";
+    public static let baseWebViewUrl = "https://scan.strut.fit/";
+    public static let conversionUrl = "https://pixellambda.strut.fit/ingest";
+
+    // public static let baseAPIUrl = "https://sizinglambda.dev.strut.fit/";
+    // public static let baseWebViewUrl = "https://scan.dev.strut.fit/";
+    // public static let conversionUrl = "https://pixellambda.dev.strut.fit/ingest";
 }
