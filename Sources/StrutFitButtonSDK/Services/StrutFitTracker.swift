@@ -25,7 +25,7 @@ public class StrutFitTracking {
         do {
             let itemsObjectJson = String(data: try _jsonEncoder.encode(items), encoding: String.Encoding.utf8)
             
-            let emailHash = hashCode(userEmail)
+            let emailHash = (userEmail?.isEmpty ?? true) ? nil : hashCode(userEmail!)
             
             let pixelData = PixelData(organizationUnitId: _organizationunitId,
                                       orderRef: orderReference, orderValue: orderValue,
