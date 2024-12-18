@@ -29,6 +29,8 @@ public class StrutFitButtonViewModel {
     private var buttonResultTextTranslations: [CustomTextValue] = []
     private var unavailableSizeText = NSLocalizedString("UnavailableInYourSize", tableName: nil, bundle: .module, value: "", comment: "")
     
+    private var themeData: JSON?
+    
     private var _buttonText = ""
     
     
@@ -39,6 +41,8 @@ public class StrutFitButtonViewModel {
     var sendMessageToJavascript: ((String) -> Void)?
     
     var closeWebView: (() -> Void)?
+    
+    var updateTheme: ((JSON) -> Void)?
 
     /// Initializes the view model with required parameters.
     /// - Parameters:
@@ -95,7 +99,9 @@ public class StrutFitButtonViewModel {
                 self._productType = ProductType(rawValue: productType) ?? ProductType.Footwear
             }
             
-            
+            if let themeData = json["VisibilityData"]["ThemeData"].rawValue as? String {
+                self.themeData = JSON.init(parseJSON: themeData);
+            }
             
             if let preLoginButtonTextAdultsTranslations = json["VisibilityData"]["PreLoginButtonTextAdultsTranslations"].rawValue as? String {
                 if let jsonData = preLoginButtonTextAdultsTranslations.data(using: .utf8) {
@@ -183,6 +189,9 @@ public class StrutFitButtonViewModel {
                 
                 if(isInitializing) {
                     self.onStateChange?(.initialize(url: self.webViewURL))
+                    if let themeData = self.themeData {
+                        self.updateTheme?(themeData)
+                    }
                 } else {
                     // Set visible with button text
                     self.onStateChange?(.visible(title: self._buttonText))
@@ -241,6 +250,16 @@ public class StrutFitButtonViewModel {
                 } catch {
                     print("Error encoding input to JSON: \(error)")
                 }
+                if let themeData = self.themeData {
+                    let themeInput = PostMessageUpdateThemeDto(themeData: themeData)
+                    do {
+                        let themeJsonData = try encoder.encode(themeInput)
+                        self.postMessage(data: themeJsonData)
+                    } catch {
+                        print("Error encoding theme to JSON: \(error)")
+                    }
+                }
+                
                 // Set visible with button text
                 DispatchQueue.main.async {
                     self.onStateChange?(.visible(title: self._buttonText))
@@ -326,5 +345,9 @@ public class StrutFitButtonViewModel {
 
     func getUnavailableSizeText() -> String {
         return unavailableSizeText;
+    }
+    
+    func getThemeData() -> JSON? {
+        return themeData;
     }
 }

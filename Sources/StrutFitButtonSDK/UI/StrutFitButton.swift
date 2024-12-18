@@ -106,6 +106,7 @@ public class StrutFitButton: UIButton {
         
         viewModel.sendMessageToJavascript = sendMessageToJavascript;
         viewModel.closeWebView = closeWebView;
+        viewModel.updateTheme = updateTheme;
     }
     
     func sendMessageToJavascript(message: String) {
@@ -114,6 +115,57 @@ public class StrutFitButton: UIButton {
     
     func closeWebView() {
         coordinator?.closeWebView()
+    }
+    
+    func updateTheme(theme: JSON) {
+        let sfButtonThemes = theme["SFButton"].arrayValue
+        
+        var buttonTheme: JSON?
+
+        // Check if there is a buttonTheme with IsDefault set to true
+        if let defaultButtonTheme = sfButtonThemes.first(where: { $0["IsDefault"].boolValue }) {
+            // Use the defaultButtonTheme
+            buttonTheme = defaultButtonTheme
+        } else if let firstButtonTheme = sfButtonThemes.first {
+            // Fallback to the first buttonTheme
+            buttonTheme = firstButtonTheme
+        } else {
+            return;
+        }
+        
+        if let theme = buttonTheme {
+            // Set the button's text color if SFButtonText is available
+            if let buttonTextColor = theme["Colors"]["SFButtonText"].string, !buttonTextColor.isEmpty {
+                self.setTitleColor(UIColor(hex: buttonTextColor), for: .normal)
+            }
+
+            // Set the button's background color if SFButtonBackground is available
+            if let buttonBackgroundColor = theme["Colors"]["SFButtonBackground"].string, !buttonBackgroundColor.isEmpty {
+                self.backgroundColor = UIColor(hex: buttonBackgroundColor)
+            }
+            
+            // Hide the button logo (image view) if HideStrutFitButtonLogo is true
+            if theme["HideStrutFitButtonLogo"].boolValue {
+                self.setImage(nil, for: .normal)
+            }
+            
+            // Set the font size if PrimaryFontSize is available
+            if let primaryFontSize = theme["Fonts"]["PrimaryFontSize"].string, !primaryFontSize.isEmpty {
+                if let fontSize = extractFontSize(from: primaryFontSize) {
+                    if let titleLabel = titleLabel {
+                        titleLabel.font = titleLabel.font.withSize(fontSize)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func extractFontSize(from fontSizeString: String) -> CGFloat? {
+        let fontSize = fontSizeString.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        if let size = Double(fontSize) {
+            return CGFloat(size)
+        }
+        return nil
     }
     
     private func preloadWebView(url: URL) {
