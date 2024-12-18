@@ -34,3 +34,14 @@ public class PostMessageInitialAppInfoDto: Encodable {
     var hideUsualSize: Bool
     var inApp: Bool
 }
+
+public class PostMessageUpdateThemeDto: Encodable {
+    // Initializer
+    public init(themeData: JSON) {
+        self.strutfitMessageType = PostMessageType.UpdateTheme.rawValue
+        self.theme = themeData
+    }
+    
+    var strutfitMessageType: Int
+    var theme: JSON
+}
