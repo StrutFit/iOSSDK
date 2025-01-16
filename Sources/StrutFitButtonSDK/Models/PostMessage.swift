@@ -8,7 +8,7 @@
 public class PostMessageInitialAppInfoDto: Encodable {
 
     // Initializer
-    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType, defaultSizeUnit: SizeUnit?, defaultApparelSizeUnit: String?, onlineScanInstructionsType: OnlineScanInstructionsType) {
+    public init(productCode: String, organizationUnitId: Int, isKids: Bool, productType: ProductType, defaultSizeUnit: SizeUnit?, defaultApparelSizeUnit: String?, onlineScanInstructionsType: OnlineScanInstructionsType, brandName: String?, hideScanning: Bool, hideUsualSize: Bool, usualSizeMethods: [Int]?) {
         self.productId = productCode;
         self.organizationUnitId = organizationUnitId;
         self.productType = productType.rawValue;
@@ -16,8 +16,11 @@ public class PostMessageInitialAppInfoDto: Encodable {
         self.defaultSizeUnit = defaultSizeUnit?.rawValue;
         self.defaultApparelSizeUnit = defaultApparelSizeUnit;
         self.onlineScanInstructionsType = onlineScanInstructionsType.rawValue;
+        self.brandName = brandName;
+        self.hideScanning = hideScanning;
         self.hideSizeGuide = true;
-        self.hideUsualSize = true;
+        self.hideUsualSize = hideUsualSize;
+        self.usualSizeMethods = usualSizeMethods;
         self.inApp = true;
         self.strutfitMessageType = PostMessageType.InitialAppInfo.rawValue
     }
@@ -30,8 +33,11 @@ public class PostMessageInitialAppInfoDto: Encodable {
     var productId: String
     var defaultSizeUnit: Int?
     var defaultApparelSizeUnit: String?
+    var brandName: String?
+    var hideScanning: Bool
     var hideSizeGuide: Bool
     var hideUsualSize: Bool
+    var usualSizeMethods: [Int]?
     var inApp: Bool
 }
 
