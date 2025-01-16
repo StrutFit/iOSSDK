@@ -23,6 +23,10 @@ public class StrutFitButtonViewModel {
     private var _isKids: Bool = false
     private var _productType: ProductType = ProductType.Footwear
     private var _onlineScanInstructionsType: OnlineScanInstructionsType = OnlineScanInstructionsType.OneFootOnPaper
+    private var _brandName: String? = nil
+    private var _hideScanning: Bool = false
+    private var _hideUsualSize: Bool = true
+    private var _usualSizeMethods: [Int]? = nil
     
     private var preLoginButtonTextAdultsTranslations: [CustomTextValue] = []
     private var preLoginButtonTextKidsTranslations: [CustomTextValue] = []
@@ -98,6 +102,23 @@ public class StrutFitButtonViewModel {
             if let productType = json["VisibilityData"]["ProductType"].rawValue as? Int {
                 self._productType = ProductType(rawValue: productType) ?? ProductType.Footwear
             }
+            
+            if let _brandName = json["VisibilityData"]["BrandName"].rawValue as? String {
+                self._brandName = _brandName
+            }
+            
+            if let isScanningEnabled = json["VisibilityData"]["IsScanningEnabled"].rawValue as? Bool {
+                self._hideScanning = !isScanningEnabled
+            }
+            
+            if let isUsualSizeEnabled = json["VisibilityData"]["IsUsualSizeEnabled"].rawValue as? Bool {
+                self._hideUsualSize = !isUsualSizeEnabled
+            }
+            
+            if let _usualSizeMethods = json["VisibilityData"]["UsualSizeMethods"].rawValue as? [Int] {
+                self._usualSizeMethods = _usualSizeMethods
+            }
+            
             
             if let themeData = json["VisibilityData"]["ThemeData"].rawValue as? String {
                 self.themeData = JSON.init(parseJSON: themeData);
@@ -242,7 +263,7 @@ public class StrutFitButtonViewModel {
                 break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType, brandName: _brandName, hideScanning: _hideScanning, hideUsualSize: _hideUsualSize, usualSizeMethods: _usualSizeMethods)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)
