@@ -25,6 +25,7 @@ public class StrutFitButtonViewModel {
     private var _onlineScanInstructionsType: OnlineScanInstructionsType = OnlineScanInstructionsType.OneFootOnPaper
     private var _brandName: String? = nil
     private var _hideScanning: Bool = false
+    private var _hideSizeGuide: Bool = false
     private var _hideUsualSize: Bool = true
     private var _usualSizeMethods: [Int]? = nil
     
@@ -109,6 +110,10 @@ public class StrutFitButtonViewModel {
             
             if let isScanningEnabled = json["VisibilityData"]["IsScanningEnabled"].rawValue as? Bool {
                 self._hideScanning = !isScanningEnabled
+            }
+            
+            if let isSizeGuideEnabled = json["VisibilityData"]["IsSizeGuideEnabled"].rawValue as? Bool {
+                self._hideSizeGuide = !isSizeGuideEnabled
             }
             
             if let isUsualSizeEnabled = json["VisibilityData"]["IsUsualSizeEnabled"].rawValue as? Bool {
@@ -263,7 +268,7 @@ public class StrutFitButtonViewModel {
                 break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType, brandName: _brandName, hideScanning: _hideScanning, hideUsualSize: _hideUsualSize, usualSizeMethods: _usualSizeMethods)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType, brandName: _brandName, hideScanning: _hideScanning, hideSizeGuide: _hideSizeGuide, hideUsualSize: _hideUsualSize, usualSizeMethods: _usualSizeMethods)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)

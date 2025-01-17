@@ -22,7 +22,7 @@ public enum PostMessageType: Int {
     case IframeReady = 6
     case ABTestInfo = 7
     case ReplicaButtonProductLoad = 8
-    case SizeGuideButtonClick = 9
+    case SizeGuideOpened = 9
     case DeviceMotion = 10
     case DeviceOrientation = 11
     case UserAcceptedCookies = 12
