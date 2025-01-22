@@ -33,6 +33,7 @@ public enum PostMessageType: Int {
     case ReplicaButtonData = 17
     case InitialAppInfo = 18
     case LanguageChange = 19
+    case IsIframeReady = 20
 }
 
 public enum StrutfitError: Error {
