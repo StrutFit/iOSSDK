@@ -18,22 +18,21 @@ public enum PostMessageType: Int {
     case UserBodyMeasurementCodeData = 2
     case CloseIFrame = 3
     case ShowIFrame = 4
-    case ProductInfo = 5
-    case IframeReady = 6
-    case ABTestInfo = 7
-    case ReplicaButtonProductLoad = 8
-    case SizeGuideOpened = 9
-    case DeviceMotion = 10
-    case DeviceOrientation = 11
-    case UserAcceptedCookies = 12
-    case UpdateProduct = 13
-    case UpdateTheme = 14
-    case ScanSucceeded = 15
-    case RequestDeviceMotionAndOrientation = 16
-    case ReprocessSize = 17
-    case ReplicaButtonData = 18
-    case InitialAppInfo = 19
-    case LanguageChange = 20
+    case IframeReady = 5
+    case ABTestInfo = 6
+    case ReplicaButtonProductLoad = 7
+    case SizeGuideOpened = 8
+    case DeviceMotion = 9
+    case DeviceOrientation = 10
+    case UserAcceptedCookies = 11
+    case UpdateProduct = 12
+    case UpdateTheme = 13
+    case ScanSucceeded = 14
+    case RequestDeviceMotionAndOrientation = 15
+    case ReprocessSize = 16
+    case ReplicaButtonData = 17
+    case InitialAppInfo = 18
+    case LanguageChange = 19
 }
 
 public enum StrutfitError: Error {

@@ -18,10 +18,14 @@ public class StrutFitButtonViewModel {
     private let organizationUnitId: Int
     private let sizeUnit: SizeUnit?
     private let apparelSizeUnit: String?
+    private var productName: String
+    private var productImageURL: String
     private let webViewURL: URL
     
     private var _isKids: Bool = false
     private var _productType: ProductType = ProductType.Footwear
+
+    private var _useStrutFitProductNameAsFallback: Bool = false
     private var _onlineScanInstructionsType: OnlineScanInstructionsType = OnlineScanInstructionsType.OneFootOnPaper
     private var _brandName: String? = nil
     private var _hideScanning: Bool = false
@@ -35,6 +39,7 @@ public class StrutFitButtonViewModel {
     private var unavailableSizeText = NSLocalizedString("UnavailableInYourSize", tableName: nil, bundle: .module, value: "", comment: "")
     
     private var themeData: JSON?
+    private var useCustomTheme: Bool = false
     
     private var _buttonText = ""
     
@@ -55,11 +60,13 @@ public class StrutFitButtonViewModel {
     ///   - organizationUnitId: An integer representing the organization unit.
     ///   - sizeUnit: An optional parameter for the footwear size unit to use when sizing (useful when you sell the same product in different regions).
     ///   - apparelSizeUnit: An optional parameter for the apparel size unit to use when sizing (useful when you sell the same product in different regions).
-    init(productCode: String, organizationUnitId: Int, sizeUnit: String?, apparelSizeUnit: String?) {
+    init(productCode: String, organizationUnitId: Int, sizeUnit: String?, apparelSizeUnit: String?, productName: String, productImageURL: String) {
         self.productCode = productCode
         self.organizationUnitId = organizationUnitId
         self.sizeUnit = CommonHelper.getSizeUnitEnumFromString(sizeUnit: sizeUnit);
         self.apparelSizeUnit = apparelSizeUnit;
+        self.productName = productName;
+        self.productImageURL = productImageURL;
         self.webViewURL = URL(string: Constants.baseWebViewUrl)!
         self._client = StrutFitClient()
     }
@@ -102,6 +109,18 @@ public class StrutFitButtonViewModel {
             
             if let productType = json["VisibilityData"]["ProductType"].rawValue as? Int {
                 self._productType = ProductType(rawValue: productType) ?? ProductType.Footwear
+            }
+            
+            if let useStrutFitProductNameAsFallback = json["VisibilityData"]["UseStrutFitProductNameAsFallback"].rawValue as? Bool {
+                self._useStrutFitProductNameAsFallback = useStrutFitProductNameAsFallback
+            }
+            
+            if let productName = json["VisibilityData"]["ProductName"].rawValue as? String, self._useStrutFitProductNameAsFallback, self.productName == "" {
+                self.productName = productName
+            }
+            
+            if let productImageURL = json["VisibilityData"]["ProductImageURL"].rawValue as? String, self.productImageURL == "" {
+                self.productImageURL = productImageURL
             }
             
             if let _brandName = json["VisibilityData"]["BrandName"].rawValue as? String {
@@ -167,9 +186,13 @@ public class StrutFitButtonViewModel {
                     _size = size
                 }
                 
-                var _sizeUnit: Int = 0
+                var _sizeUnit: Int? = 0
                 if let sizeUnit = json["SizeData"]["Unit"].rawValue as? Int {
                     _sizeUnit = sizeUnit
+                }
+                var hideSizeUnit = json["VisibilityData"]["HideSizeUnit"].rawValue as? Bool ?? false;
+                if hideSizeUnit {
+                    _sizeUnit = nil
                 }
                 
                 var _showWidthCategory: Bool = false
@@ -215,7 +238,7 @@ public class StrutFitButtonViewModel {
                 
                 if(isInitializing) {
                     self.onStateChange?(.initialize(url: self.webViewURL))
-                    if let themeData = self.themeData {
+                    if let themeData = self.themeData, self.useCustomTheme  {
                         self.updateTheme?(themeData)
                     }
                 } else {
@@ -268,7 +291,7 @@ public class StrutFitButtonViewModel {
                 break;
             case PostMessageType.IframeReady:
                 //IFrame ready
-                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType, brandName: _brandName, hideScanning: _hideScanning, hideSizeGuide: _hideSizeGuide, hideUsualSize: _hideUsualSize, usualSizeMethods: _usualSizeMethods)
+                let input = PostMessageInitialAppInfoDto(productCode: productCode, organizationUnitId: organizationUnitId, isKids: _isKids, productType: _productType, productName: productName, productImageURL: productImageURL, defaultSizeUnit: sizeUnit, defaultApparelSizeUnit: apparelSizeUnit, onlineScanInstructionsType: _onlineScanInstructionsType, brandName: _brandName, hideScanning: _hideScanning, hideSizeGuide: _hideSizeGuide, hideUsualSize: _hideUsualSize, usualSizeMethods: _usualSizeMethods)
                 do {
                     let jsonData = try encoder.encode(input)
                     self.postMessage(data: jsonData)
@@ -276,7 +299,7 @@ public class StrutFitButtonViewModel {
                 } catch {
                     print("Error encoding input to JSON: \(error)")
                 }
-                if let themeData = self.themeData {
+                if let themeData = self.themeData, self.useCustomTheme {
                     let themeInput = PostMessageUpdateThemeDto(themeData: themeData)
                     do {
                         let themeJsonData = try encoder.encode(themeInput)
