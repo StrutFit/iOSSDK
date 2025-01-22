@@ -12,6 +12,8 @@ public struct StrutFitButtonView: UIViewRepresentable {
     let organizationUnitId: Int
     let sizeUnit: String?
     let apparelSizeUnit: String?
+    let productName: String
+    let productImageURL: String
     
     /// Initializes the button with required parameters.
         /// - Parameters:
@@ -19,15 +21,17 @@ public struct StrutFitButtonView: UIViewRepresentable {
         ///   - organizationUnitId: An integer representing the organization unit.
         ///   - sizeUnit: An optional parameter for the footwear size unit to use when sizing (useful when you sell the same product in different regions).
         ///   - apparelSizeUnit: An optional parameter for the apparel size unit to use when sizing (useful when you sell the same product in different regions).
-    public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil, apparelSizeUnit: String? = nil) {
+    public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil, apparelSizeUnit: String? = nil, productName: String = "", productImageURL: String = "") {
         self.productCode = productCode
         self.organizationUnitId = organizationUnitId
         self.sizeUnit = sizeUnit
         self.apparelSizeUnit = apparelSizeUnit
+        self.productName = productName
+        self.productImageURL = productImageURL
     }
     
     public func makeUIView(context: Context) -> StrutFitButton {
-        let button = StrutFitButton(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit)
+        let button = StrutFitButton(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit, productName: productName, productImageURL: productImageURL)
         return button
     }
     

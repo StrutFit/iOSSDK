@@ -84,7 +84,7 @@ public class StrutFitButtonViewModel {
             responseObject, error in
             
             guard let responseObject = responseObject, error == nil else {
-                throw StrutfitError.unexpectedResponse
+                return;
             }
             
             let json = JSON(responseObject)
@@ -143,6 +143,9 @@ public class StrutFitButtonViewModel {
                 self._usualSizeMethods = _usualSizeMethods
             }
             
+            if let useCustomTheme = json["VisibilityData"]["UseCustomTheme"].rawValue as? Bool {
+                self.useCustomTheme = useCustomTheme
+            }
             
             if let themeData = json["VisibilityData"]["ThemeData"].rawValue as? String {
                 self.themeData = JSON.init(parseJSON: themeData);
