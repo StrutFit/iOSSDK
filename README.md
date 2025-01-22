@@ -19,10 +19,12 @@ struct ContentView: View {
     let productCode = "Test Product 1" // dynamic
     let sizeUnit = "US" // optional - dynamic
     let apparelSizeUnit = "US" // optional - dynamic
+    let productName = "Test Product" // optional - dynamic
+    let productImageURL = "https://example.com/image.jpg" // optional - dynamic
     
     var body: some View {
         VStack {
-            StrutFitButtonView(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit)
+            StrutFitButtonView(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit, productName: productName, productImageURL: productImageURL)
                 .frame(width: 300)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -40,6 +42,8 @@ Important things to note:
 * The **productCode** value will vary depending on the product being viewed, but it will be a unique string value for that product. This value will need to match what we have in our StrutFit system, so please discuss this with your StrutFit account manager.
 * The **sizeUnit** value is optional, but can be used when you sell the same product in different regions and want to display a different size unit to the user.When not supplied, there is internal logic to determine which size unit to display based on previous configuration in the StrutFit system.
 * The **apparelSizeUnit** value is optional, and is the same as sizeUnit, but specific to apparel products.
+* The **productName** value is optional, and is for you to override the product name if you don't want to use the name in the StrutFit database.
+* The **productImageURL** value is optional, and is for you to override the product image URL if you don't want to use the image URL in the StrutFit database.
 * The StrutFit button is designed to have a fixed width (supplied by you) and then a dynamic height to fit all of the text within the button (this will change depending on the user's language and the button's state). By using the **.frame** and **.fixedSize** functions on the **StrutFitButtonView** component you can set the button's width and restrict the button's height from auto-filling its parent. These are required when using SwiftUI to get the correct sizing behaviour.
 
 5. Testing\

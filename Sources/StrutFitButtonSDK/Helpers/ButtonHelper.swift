@@ -2,8 +2,12 @@ import Foundation
 
 public struct ButtonHelper {
     
-    public static func mapSizeUnitEnumtoString(sizeUnit: Int) -> String
+    public static func mapSizeUnitEnumtoString(sizeUnit: Int?) -> String
     {
+        if sizeUnit == nil {
+            return ""
+        }
+        
         switch sizeUnit {
         case 0:
             return "US"
