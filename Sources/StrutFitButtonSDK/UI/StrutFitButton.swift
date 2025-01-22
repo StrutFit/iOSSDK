@@ -18,6 +18,8 @@ public class StrutFitButton: UIButton {
         ///   - organizationUnitId: An integer representing the organization unit.
         ///   - sizeUnit: An optional parameter for the footwear size unit to use when sizing (useful when you sell the same product in different regions).
         ///   - apparelSizeUnit: An optional parameter for the apparel size unit to use when sizing (useful when you sell the same product in different regions).
+        ///   - productName: An optional parameter for the product name for you to override if you don't want to use the name in the StrutFit database
+        ///   - productImageURL: An optional parameter for the product image URL for you to override if you don't want to use the image URL in the StrutFit database
     public init(productCode: String, organizationUnitId: Int, sizeUnit: String? = nil, apparelSizeUnit: String? = nil, productName: String = "", productImageURL: String = "") {
         self.viewModel = StrutFitButtonViewModel(productCode: productCode, organizationUnitId: organizationUnitId, sizeUnit: sizeUnit, apparelSizeUnit: apparelSizeUnit, productName: productName, productImageURL: productImageURL)
         super.init(frame: .zero)

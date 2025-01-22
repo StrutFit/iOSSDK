@@ -387,11 +387,14 @@ public class StrutFitButtonViewModel {
                 return translation!.text
                     .replacingOccurrences(of: "@size", with: size)
                     .replacingOccurrences(of: "@unit", with: sizeUnit)
-                    .replacingOccurrences(of: "@width", with: width);
+                    .replacingOccurrences(of: "@width", with: width)
+                    .replacingOccurrences(of: "  ", with: " ");
             }
         }
 
-        return NSLocalizedString("YourStrutfitSize", tableName: nil, bundle: .module, value: "", comment: "") + size + " " + sizeUnit + " " + width;
+        
+        var defaultText = NSLocalizedString("YourStrutfitSize", tableName: nil, bundle: .module, value: "", comment: "") + size + " " + sizeUnit + " " + width;
+        return defaultText.replacingOccurrences(of: "  ", with: " ");
     }
 
 
